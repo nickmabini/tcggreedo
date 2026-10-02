@@ -631,9 +631,10 @@
     "price": 0,
     "hiddenPrice": 0,
     "quantity": 1,
-    "sold": 0,
+    "sold": 1,
     "archived": false,
     "dateAdded": "2026-10-02",
-    "image": "0019258447-front.jpg"
+    "image": "0019258447-front.jpg",
+    "soldDate": "2026-10-02"
   }
 ]
