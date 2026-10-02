@@ -603,27 +603,27 @@
      TCG GREEDO — ADMIN LOGIC
      ═══════════════════════════════════════════════════════════════ */
 
-  // ── CONFIG (replace these when wiring up) ─────────────────────
-  const ADMIN_PASSWORD = 'greedo2026';  // Change this
-  const ANTHROPIC_API_KEY = '';         // Your Claude API key
-  const GITHUB_TOKEN = '';              // Your GitHub PAT
-  const GITHUB_REPO = '';              // e.g. 'yourusername/tcggreedo'
+  // ── CONFIG ─────────────────────────────────────────────────────
+  const API_URL = '/.netlify/functions/api';
+  let adminPassword = '';  // Set on login, sent with every API call
 
   // ── STATE ─────────────────────────────────────────────────────
   let inventory = [];
+  let inventorySha = null;  // GitHub file sha for updates
   let currentTab = 'active';
   let editingId = null;
 
-  // ── MOCK DATA (remove once connected to real inventory) ───────
-  const MOCK_INVENTORY = [
-    { id:"158375823", name:"Rocket's Snorlax ex", set:"Team Rocket Returns", year:2004, cardNumber:"104/109", grader:"PSA", grade:9, price:450, hiddenPrice:0, quantity:1, sold:0, archived:false, dateAdded:"2026-09-25", image:"158375823-front.jpg" },
-    { id:"49372132", name:"Charizard G LV.X", set:"D&P Black Star Promo", year:2009, cardNumber:"DP45", grader:"PSA", grade:9, price:0, hiddenPrice:800, quantity:1, sold:0, archived:false, dateAdded:"2026-09-25", image:"49372132-front.jpg" },
-    { id:"97589101", name:"Gengar LV.X — Holo", set:"Platinum Arceus", year:2009, cardNumber:"97/99", grader:"PSA", grade:9, price:0, hiddenPrice:0, quantity:1, sold:0, archived:false, dateAdded:"2026-09-25", image:"97589101-front.jpg" },
-    { id:"64798233", name:"Rocket's Zapdos — 1st Ed Holo", set:"Gym Challenge", year:2000, cardNumber:"15/132", grader:"PSA", grade:10, price:0, hiddenPrice:24000, quantity:1, sold:0, archived:false, dateAdded:"2026-09-25", image:"64798233-front.jpg" },
-    { id:"52700342", name:"Lugia — Holo", set:"Call of Legends", year:2011, cardNumber:"SL7", grader:"PSA", grade:9, price:0, hiddenPrice:0, quantity:2, sold:1, archived:false, dateAdded:"2026-09-27", image:"52700342-front.jpg" },
-    { id:"6005494042", name:"Nidoqueen — Rev Holo", set:"Legendary Collection", year:2002, cardNumber:"32/110", grader:"CGC", grade:10, price:0, hiddenPrice:0, quantity:1, sold:0, archived:false, dateAdded:"2026-09-26", image:"6005494042-front.jpg" },
-    { id:"41938720", name:"Pikachu — 1st Ed W Stamp", set:"Jungle", year:1999, cardNumber:"60/64", grader:"PSA", grade:10, price:0, hiddenPrice:0, quantity:1, sold:0, archived:true, dateAdded:"2026-09-26", image:"41938720-front.jpg" },
-  ];
+  // ── API HELPER ────────────────────────────────────────────────
+  async function api(action, payload = {}) {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action, password: adminPassword, ...payload })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'API error');
+    return data;
+  }
 
   // ── HELPERS ───────────────────────────────────────────────────
   const $ = s => document.querySelector(s);
@@ -656,12 +656,18 @@
   }
 
   // ── AUTH ──────────────────────────────────────────────────────
-  function checkPass() {
+  async function checkPass() {
     const pass = $('#gatePass').value;
-    if (pass === ADMIN_PASSWORD) {
-      sessionStorage.setItem('tcg_admin', 'true');
+    adminPassword = pass;
+    try {
+      // Test the password by making an API call
+      const data = await api('get-inventory');
+      inventory = data.inventory || [];
+      inventorySha = data.sha;
+      sessionStorage.setItem('tcg_admin', pass);
       showDashboard();
-    } else {
+    } catch (e) {
+      adminPassword = '';
       $('#gateError').style.display = 'block';
       $('#gatePass').value = '';
       setTimeout(() => $('#gateError').style.display = 'none', 2000);
@@ -670,21 +676,27 @@
 
   function logout() {
     sessionStorage.removeItem('tcg_admin');
+    adminPassword = '';
     $('#dashboard').style.display = 'none';
     $('#gate').style.display = 'flex';
     $('#gatePass').value = '';
   }
 
-  function showDashboard() {
+  async function showDashboard() {
     $('#gate').style.display = 'none';
     $('#dashboard').style.display = 'block';
-    loadInventory();
+    await loadInventory();
   }
 
   // ── LOAD INVENTORY ────────────────────────────────────────────
-  function loadInventory() {
-    // TODO: Replace with GitHub API fetch of inventory.json
-    inventory = JSON.parse(JSON.stringify(MOCK_INVENTORY));
+  async function loadInventory() {
+    try {
+      const data = await api('get-inventory');
+      inventory = data.inventory || [];
+      inventorySha = data.sha;
+    } catch (e) {
+      toast('Failed to load inventory: ' + e.message);
+    }
     updateCounts();
     renderGrid();
   }
@@ -977,42 +989,58 @@
   async function parseSlab(imageData) {
     $('#parsing').classList.add('show');
 
-    // TODO: Replace with real Claude API call
-    // Simulating a parse delay + mock response
-    await new Promise(r => setTimeout(r, 1500));
+    try {
+      // Strip data URL prefix to get pure base64
+      const base64 = imageData.split(',')[1];
+      const mimeType = imageData.match(/data:(.*?);/)?.[1] || 'image/jpeg';
 
-    // Mock parsed data (replace with actual API response)
-    const parsed = {
-      name: 'Parsed Card Name',
-      set: 'Parsed Set',
-      year: 2024,
-      cardNumber: '001/100',
-      grader: 'PSA',
-      grade: 9,
-      cert: '99999999'
-    };
+      // Call Claude API via serverless function
+      const data = await api('parse-slab', { imageBase64: base64, mimeType });
+      const parsed = data.parsed;
 
-    $('#parsing').classList.remove('show');
-    $('#slabFields').style.display = 'block';
+      $('#parsing').classList.remove('show');
+      $('#slabFields').style.display = 'block';
 
-    // Fill fields
-    $('#fName').value = parsed.name;
-    $('#fName').classList.add('auto-filled');
-    $('#fSet').value = parsed.set;
-    $('#fSet').classList.add('auto-filled');
-    $('#fYear').value = parsed.year;
-    $('#fYear').classList.add('auto-filled');
-    $('#fCardNum').value = parsed.cardNumber;
-    $('#fCardNum').classList.add('auto-filled');
-    $('#fGrader').value = parsed.grader;
-    $('#fGrade').value = parsed.grade;
-    $('#fGrade').classList.add('auto-filled');
-    $('#fCert').value = parsed.cert;
-    $('#fCert').classList.add('auto-filled');
+      // Fill fields
+      if (parsed.name) { $('#fName').value = parsed.name; $('#fName').classList.add('auto-filled'); }
+      if (parsed.set) { $('#fSet').value = parsed.set; $('#fSet').classList.add('auto-filled'); }
+      if (parsed.year) { $('#fYear').value = parsed.year; $('#fYear').classList.add('auto-filled'); }
+      if (parsed.cardNumber) { $('#fCardNum').value = parsed.cardNumber; $('#fCardNum').classList.add('auto-filled'); }
+      if (parsed.grader) { $('#fGrader').value = parsed.grader; }
+      if (parsed.grade) { $('#fGrade').value = parsed.grade; $('#fGrade').classList.add('auto-filled'); }
+      if (parsed.cert) { $('#fCert').value = parsed.cert; $('#fCert').classList.add('auto-filled'); }
+
+      toast('Label parsed successfully');
+
+      // Try to fetch PSA scan automatically
+      if (parsed.cert && (parsed.grader || 'PSA').toUpperCase() === 'PSA') {
+        fetchAndPreviewPsaScan(parsed.cert);
+      }
+    } catch (e) {
+      $('#parsing').classList.remove('show');
+      $('#slabFields').style.display = 'block';
+      toast('Parse failed — enter details manually');
+      console.error(e);
+    }
+  }
+
+  // Fetch PSA scan in background after parsing
+  async function fetchAndPreviewPsaScan(cert) {
+    try {
+      const data = await api('fetch-psa-scan', { cert, grader: 'PSA' });
+      if (data.imageUrl) {
+        // Store the PSA scan URL for later upload
+        window._psaScanUrl = data.imageUrl;
+        toast('PSA scan found — will use as listing image');
+      }
+    } catch (e) {
+      // Silent fail — user can still upload their own photo
+      console.log('PSA scan fetch failed:', e);
+    }
   }
 
   // ── SAVE / UPDATE / ARCHIVE / DELETE ──────────────────────────
-  function saveSlab() {
+  async function saveSlab() {
     const slab = {
       id: $('#fCert').value,
       name: $('#fName').value,
@@ -1027,23 +1055,49 @@
       sold: 0,
       archived: false,
       dateAdded: new Date().toISOString().split('T')[0],
-      image: $('#fCert').value + '-front.jpg'
+      image: slab => slab.id + '-front.jpg'
     };
+    slab.image = slab.id + '-front.jpg';
 
     if (!slab.id || !slab.name) {
       toast('Name and Cert # are required');
       return;
     }
 
-    inventory.push(slab);
-    // TODO: Commit to GitHub
-    updateCounts();
-    renderGrid();
-    closePanel();
-    toast('Slab published');
+    toast('Publishing...');
+
+    try {
+      // Upload image if we have one
+      if (uploadedImageData) {
+        let imageBase64;
+        if (window._psaScanUrl) {
+          // We have a PSA scan URL — fetch it and convert to base64
+          // Actually, we can't fetch cross-origin from browser. Use the uploaded photo instead.
+          imageBase64 = uploadedImageData.split(',')[1];
+        } else {
+          imageBase64 = uploadedImageData.split(',')[1];
+        }
+        await api('upload-image', { imageBase64, filename: slab.image });
+      }
+
+      // Add slab to inventory and save
+      inventory.push(slab);
+      const result = await api('save-inventory', { inventory, sha: inventorySha });
+      inventorySha = result.sha;
+
+      updateCounts();
+      renderGrid();
+      closePanel();
+      toast('Slab published — site updates in ~30 sec');
+    } catch (e) {
+      // Remove the slab we just added since commit failed
+      inventory = inventory.filter(x => x.id !== slab.id);
+      toast('Publish failed: ' + e.message);
+      console.error(e);
+    }
   }
 
-  function updateSlab() {
+  async function updateSlab() {
     const s = inventory.find(x => x.id === editingId);
     if (!s) return;
     s.name = $('#fName').value;
@@ -1056,14 +1110,21 @@
     s.hiddenPrice = parseInt($('#fHidden').value) || 0;
     s.quantity = parseInt($('#fQty').value) || 1;
     s.sold = parseInt($('#fSold').value) || 0;
-    // TODO: Commit to GitHub
-    updateCounts();
-    renderGrid();
-    closePanel();
-    toast('Slab updated');
+
+    toast('Saving...');
+    try {
+      const result = await api('save-inventory', { inventory, sha: inventorySha });
+      inventorySha = result.sha;
+      updateCounts();
+      renderGrid();
+      closePanel();
+      toast('Slab updated — site updates in ~30 sec');
+    } catch (e) {
+      toast('Save failed: ' + e.message);
+    }
   }
 
-  function markSold() {
+  async function markSold() {
     const s = inventory.find(x => x.id === editingId);
     if (!s) return;
     const qty = s.quantity || 1;
@@ -1071,46 +1132,61 @@
     if (currentSold >= qty) { toast('Already fully sold'); return; }
     s.sold = currentSold + 1;
     s.soldDate = new Date().toISOString().split('T')[0];
-    // TODO: Commit to GitHub
-    updateCounts();
-    renderGrid();
-    closePanel();
-    toast(getAvailable(s) > 0 ? 'Marked 1 sold — ' + getAvailable(s) + ' remaining' : 'Sold out');
+    toast('Saving...');
+    try {
+      const result = await api('save-inventory', { inventory, sha: inventorySha });
+      inventorySha = result.sha;
+      updateCounts(); renderGrid(); closePanel();
+      toast(getAvailable(s) > 0 ? 'Marked 1 sold — ' + getAvailable(s) + ' remaining' : 'Sold out');
+    } catch (e) {
+      s.sold = currentSold;
+      toast('Failed: ' + e.message);
+    }
   }
-  function archiveSlab() {
+
+  async function archiveSlab() {
     const s = inventory.find(x => x.id === editingId);
     if (!s) return;
     s.archived = true;
-    // TODO: Commit to GitHub
-    updateCounts();
-    renderGrid();
-    closePanel();
-    toast('Slab archived');
+    toast('Archiving...');
+    try {
+      const result = await api('save-inventory', { inventory, sha: inventorySha });
+      inventorySha = result.sha;
+      updateCounts(); renderGrid(); closePanel();
+      toast('Slab archived');
+    } catch (e) { s.archived = false; toast('Failed: ' + e.message); }
   }
 
-  function unarchiveSlab() {
+  async function unarchiveSlab() {
     const s = inventory.find(x => x.id === editingId);
     if (!s) return;
     s.archived = false;
-    // TODO: Commit to GitHub
-    updateCounts();
-    renderGrid();
-    closePanel();
-    toast('Slab reactivated');
+    toast('Reactivating...');
+    try {
+      const result = await api('save-inventory', { inventory, sha: inventorySha });
+      inventorySha = result.sha;
+      updateCounts(); renderGrid(); closePanel();
+      toast('Slab reactivated');
+    } catch (e) { s.archived = true; toast('Failed: ' + e.message); }
   }
 
-  function deleteSlab() {
+  async function deleteSlab() {
     if (!confirm('Permanently delete this slab?')) return;
+    const removed = inventory.find(x => x.id === editingId);
     inventory = inventory.filter(x => x.id !== editingId);
-    // TODO: Commit to GitHub
-    updateCounts();
-    renderGrid();
-    closePanel();
-    toast('Slab deleted');
+    toast('Deleting...');
+    try {
+      const result = await api('save-inventory', { inventory, sha: inventorySha });
+      inventorySha = result.sha;
+      updateCounts(); renderGrid(); closePanel();
+      toast('Slab deleted');
+    } catch (e) { inventory.push(removed); toast('Failed: ' + e.message); }
   }
 
   // ── INIT ──────────────────────────────────────────────────────
-  if (sessionStorage.getItem('tcg_admin') === 'true') {
+  const savedPass = sessionStorage.getItem('tcg_admin');
+  if (savedPass) {
+    adminPassword = savedPass;
     showDashboard();
   }
   </script>
