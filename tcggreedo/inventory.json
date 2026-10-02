@@ -488,7 +488,7 @@
     "grader": "PSA",
     "grade": 9,
     "price": 0,
-    "hiddenPrice": 0,
+    "hiddenPrice": 100000,
     "quantity": 2,
     "sold": 0,
     "archived": false,
