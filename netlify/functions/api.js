@@ -14,7 +14,7 @@
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const GITHUB_REPO = process.env.GITHUB_REPO || 'nickmabini/tcggreedo';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'greedo2026';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
 // ── CORS headers ────────────────────────────────────────────────
 const headers = {
@@ -75,7 +75,7 @@ async function parseSlab({ imageBase64, mimeType }) {
       'anthropic-version': '2023-06-01'
     },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-6',
       max_tokens: 500,
       messages: [{
         role: 'user',
