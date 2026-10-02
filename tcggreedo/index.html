@@ -1384,7 +1384,19 @@
        Save scans as: images/{cert}-front.jpg
      ═══════════════════════════════════════════════════════════════ */
 
-  const INVENTORY = [
+  let INVENTORY = [];
+
+  async function fetchInventory() {
+    try {
+      const res = await fetch('inventory.json?' + Date.now());
+      INVENTORY = await res.json();
+    } catch (e) {
+      console.error('Failed to load inventory:', e);
+    }
+    renderHero();
+    populateFilters();
+    renderInventory();
+  }
     // ── ORIGINAL 5 ──────────────────────────────────────────────
     {
       id: "158375823",
@@ -2419,14 +2431,7 @@
   });
 
   document.addEventListener('DOMContentLoaded', () => {
-    renderHero();
-    populateFilters();
-    renderInventory();
-
-  // Save scroll position before leaving
-  window.addEventListener('beforeunload', () => {
-    sessionStorage.setItem('scrollPos', window.scrollY);
-  });
+    fetchInventory();
   });
   </script>
 
