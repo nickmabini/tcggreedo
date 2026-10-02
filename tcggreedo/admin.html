@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — TCG Greedo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #08040d;
+      --surface: #12091c;
+      --surface2: #1a0f28;
+      --border: #2a1a3d;
+      --text: #f5f0ff;
+      --subtle: #7a6b8f;
+      --muted: #4a3d5f;
+      --purple: #8b3fbf;
+      --purple-neon: #c77dff;
+      --purple-dim: rgba(139, 63, 191, 0.15);
+      --red: #ff4a6b;
+      --green: #4aff8b;
+      --gold: #ffd76b;
+      --display: 'Russo One', 'Impact', sans-serif;
+      --sans: 'Inter', -apple-system, sans-serif;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+    a { text-decoration: none; color: inherit; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+    input, select, textarea { font-family: inherit; }
+
+    /* ── PASSWORD GATE ─────────────────────────────────────────── */
+    .gate {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .gate-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 40px 32px;
+      max-width: 360px;
+      width: 100%;
+      text-align: center;
+    }
+    .gate-logo {
+      font-family: var(--display);
+      font-size: 28px;
+      font-style: italic;
+      letter-spacing: 2px;
+      background: linear-gradient(180deg, #fff 0%, #c77dff 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    .gate-sub {
+      font-size: 12px;
+      color: var(--subtle);
+      letter-spacing: 1px;
+      margin-bottom: 28px;
+    }
+    .gate-input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 12px 14px;
+      border-radius: 6px;
+      font-size: 14px;
+      text-align: center;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+    }
+    .gate-input:focus { outline: none; border-color: var(--purple-neon); }
+    .gate-input::placeholder { letter-spacing: 0; color: var(--muted); }
+    .gate-btn {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, var(--purple) 0%, var(--purple-neon) 100%);
+      color: #fff;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border-radius: 6px;
+    }
+    .gate-error {
+      color: var(--red);
+      font-size: 12px;
+      margin-top: 12px;
+      display: none;
+    }
+
+    /* ── HEADER ─────────────────────────────────────────────────── */
+    .header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .header-logo {
+      font-family: var(--display);
+      font-size: 18px;
+      font-style: italic;
+      letter-spacing: 1px;
+      background: linear-gradient(180deg, #fff 0%, #c77dff 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .header-badge {
+      font-size: 10px;
+      letter-spacing: 1px;
+      color: var(--purple-neon);
+      background: var(--purple-dim);
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+    .header-right { display: flex; gap: 10px; align-items: center; }
+    .header-link {
+      font-size: 11px;
+      color: var(--subtle);
+      letter-spacing: 0.5px;
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    .header-link:hover { border-color: var(--purple-neon); color: var(--text); }
+
+    /* ── TABS ───────────────────────────────────────────────────── */
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px;
+      background: var(--surface);
+    }
+    .tab {
+      padding: 12px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      color: var(--subtle);
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab.active { color: var(--purple-neon); border-bottom-color: var(--purple-neon); }
+    .tab:hover { color: var(--text); }
+    .tab-count {
+      font-size: 10px;
+      background: var(--purple-dim);
+      color: var(--purple-neon);
+      padding: 2px 6px;
+      border-radius: 10px;
+      margin-left: 6px;
+    }
+
+    /* ── TOOLBAR ─────────────────────────────────────────────────── */
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .toolbar-search {
+      flex: 1;
+      min-width: 200px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+    .toolbar-search:focus { outline: none; border-color: var(--purple-neon); }
+    .toolbar-search::placeholder { color: var(--muted); }
+    .btn-add {
+      padding: 10px 20px;
+      background: linear-gradient(135deg, var(--purple) 0%, var(--purple-neon) 100%);
+      color: #fff;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 1px;
+      border-radius: 6px;
+      white-space: nowrap;
+      box-shadow: 0 4px 16px rgba(139, 63, 191, 0.3);
+      transition: transform 0.2s;
+    }
+    .btn-add:hover { transform: translateY(-1px); }
+
+    /* ── INVENTORY GRID ─────────────────────────────────────────── */
+    .admin-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+      padding: 0 20px 20px;
+    }
+    .admin-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .admin-card:hover { border-color: var(--purple-neon); }
+    .admin-card-img {
+      aspect-ratio: 3/4;
+      background: #000;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+    .admin-card-img img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+    }
+    .admin-card-status {
+      position: absolute;
+      top: 6px; left: 6px;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      padding: 3px 7px;
+      border-radius: 3px;
+    }
+    .status-active { background: rgba(74, 255, 139, 0.15); color: var(--green); }
+    .status-sold { background: rgba(255, 74, 107, 0.15); color: var(--red); }
+    .status-archived { background: rgba(255, 215, 107, 0.15); color: var(--gold); }
+    .admin-card-grade {
+      position: absolute;
+      top: 6px; right: 6px;
+      font-size: 9px;
+      font-weight: 700;
+      background: rgba(0,0,0,0.8);
+      color: var(--purple-neon);
+      padding: 3px 7px;
+      border-radius: 3px;
+      letter-spacing: 0.5px;
+    }
+    .admin-card-info {
+      padding: 10px;
+    }
+    .admin-card-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.3;
+      margin-bottom: 4px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .admin-card-meta {
+      font-size: 10px;
+      color: var(--subtle);
+    }
+    .admin-card-price {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--purple-neon);
+      margin-top: 4px;
+    }
+    .admin-empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--subtle);
+    }
+
+    /* ── SLIDE-UP PANEL (add/edit slab) ──────────────────────────── */
+    .panel-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .panel-overlay.open { opacity: 1; pointer-events: auto; }
+    .panel {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      max-height: 92vh;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-radius: 16px 16px 0 0;
+      z-index: 101;
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .panel.open { transform: translateY(0); }
+    .panel-handle {
+      width: 40px; height: 4px;
+      background: var(--muted);
+      border-radius: 2px;
+      margin: 12px auto 0;
+    }
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px 12px;
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      z-index: 5;
+    }
+    .panel-title {
+      font-family: var(--display);
+      font-size: 16px;
+      letter-spacing: 1px;
+    }
+    .panel-close {
+      font-size: 20px;
+      color: var(--subtle);
+      padding: 4px 8px;
+      cursor: pointer;
+    }
+    .panel-body { padding: 0 20px 24px; }
+
+    /* ── UPLOAD ZONE ─────────────────────────────────────────────── */
+    .upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      padding: 32px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 20px;
+    }
+    .upload-zone:hover, .upload-zone.dragover {
+      border-color: var(--purple-neon);
+      background: var(--purple-dim);
+    }
+    .upload-zone-icon { font-size: 32px; margin-bottom: 8px; }
+    .upload-zone-text { font-size: 13px; color: var(--text); margin-bottom: 4px; }
+    .upload-zone-hint { font-size: 11px; color: var(--muted); }
+    .upload-preview {
+      display: none;
+      margin-bottom: 20px;
+    }
+    .upload-preview.show { display: block; }
+    .upload-preview img {
+      max-height: 200px;
+      border-radius: 8px;
+      margin: 0 auto;
+      display: block;
+      border: 1px solid var(--border);
+    }
+    .parsing-indicator {
+      display: none;
+      text-align: center;
+      padding: 20px;
+      color: var(--purple-neon);
+      font-size: 13px;
+    }
+    .parsing-indicator.show { display: block; }
+    .parsing-spinner {
+      width: 24px; height: 24px;
+      border: 2px solid var(--border);
+      border-top-color: var(--purple-neon);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 10px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── FORM FIELDS ─────────────────────────────────────────────── */
+    .field { margin-bottom: 14px; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .field-label {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--subtle);
+      margin-bottom: 5px;
+    }
+    .field-input, .field-select {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+    .field-input:focus, .field-select:focus {
+      outline: none;
+      border-color: var(--purple-neon);
+    }
+    .field-input::placeholder { color: var(--muted); }
+    .field-input.auto-filled {
+      border-color: var(--purple);
+      background: rgba(139, 63, 191, 0.08);
+    }
+
+    /* ── ACTION BUTTONS ──────────────────────────────────────────── */
+    .panel-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      flex: 1;
+      min-width: 100px;
+      padding: 12px 16px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--purple) 0%, var(--purple-neon) 100%);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(139, 63, 191, 0.3);
+    }
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .btn-danger {
+      background: transparent;
+      border: 1px solid rgba(255, 74, 107, 0.3);
+      color: var(--red);
+    }
+    .btn-archive {
+      background: transparent;
+      border: 1px solid rgba(255, 215, 107, 0.3);
+      color: var(--gold);
+    }
+
+    /* ── DETAIL VIEW (edit mode) ──────────────────────────────────── */
+    .detail-img-wrap {
+      background: #000;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      max-height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .detail-img-wrap img {
+      max-height: 220px;
+      width: auto;
+    }
+
+    /* ── STATS BAR ────────────────────────────────────────────────── */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      padding: 16px 20px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+    .stat-num {
+      font-family: var(--display);
+      font-size: 22px;
+      color: var(--text);
+    }
+    .stat-label {
+      font-size: 9px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--subtle);
+      margin-top: 2px;
+    }
+
+    /* ── TOAST ─────────────────────────────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 13px;
+      z-index: 200;
+      transition: transform 0.3s;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ── RESPONSIVE ───────────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .admin-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 12px 12px; }
+      .toolbar { padding: 12px; }
+      .tabs { padding: 0 12px; }
+      .panel { max-height: 95vh; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       PASSWORD GATE
+       ═══════════════════════════════════════════════════════════ -->
+  <div id="gate" class="gate">
+    <div class="gate-box">
+      <div class="gate-logo">TCGGREEDO</div>
+      <div class="gate-sub">Inventory Admin</div>
+      <input type="password" id="gatePass" class="gate-input" placeholder="Enter password" onkeydown="if(event.key==='Enter') checkPass()">
+      <button class="gate-btn" onclick="checkPass()">ENTER</button>
+      <div class="gate-error" id="gateError">Wrong password</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       ADMIN DASHBOARD (hidden until auth)
+       ═══════════════════════════════════════════════════════════ -->
+  <div id="dashboard" style="display:none;">
+
+    <!-- Header -->
+    <div class="header">
+      <div>
+        <span class="header-logo">TCGGREEDO</span>
+        <span class="header-badge">ADMIN</span>
+      </div>
+      <div class="header-right">
+        <a href="index.html" class="header-link">View Site</a>
+        <button class="header-link" onclick="logout()">Log Out</button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats" id="stats"></div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab active" data-tab="active" onclick="switchTab('active')">Active <span class="tab-count" id="countActive">0</span></div>
+      <div class="tab" data-tab="sold" onclick="switchTab('sold')">Sold <span class="tab-count" id="countSold">0</span></div>
+      <div class="tab" data-tab="archived" onclick="switchTab('archived')">Archived <span class="tab-count" id="countArchived">0</span></div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <input type="text" class="toolbar-search" id="searchInput" placeholder="Search slabs..." oninput="renderGrid()">
+      <button class="btn-add" onclick="openAddPanel()">+ Add Slab</button>
+    </div>
+
+    <!-- Inventory Grid -->
+    <div class="admin-grid" id="adminGrid"></div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       ADD/EDIT PANEL (slides up from bottom)
+       ═══════════════════════════════════════════════════════════ -->
+  <div class="panel-overlay" id="panelOverlay" onclick="closePanel()"></div>
+  <div class="panel" id="panel">
+    <div class="panel-handle"></div>
+    <div class="panel-header">
+      <span class="panel-title" id="panelTitle">Add Slab</span>
+      <span class="panel-close" onclick="closePanel()">×</span>
+    </div>
+    <div class="panel-body" id="panelBody"></div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+  /* ═══════════════════════════════════════════════════════════════
+     TCG GREEDO — ADMIN LOGIC
+     ═══════════════════════════════════════════════════════════════ */
+
+  // ── CONFIG (replace these when wiring up) ─────────────────────
+  const ADMIN_PASSWORD = 'greedo2026';  // Change this
+  const ANTHROPIC_API_KEY = '';         // Your Claude API key
+  const GITHUB_TOKEN = '';              // Your GitHub PAT
+  const GITHUB_REPO = '';              // e.g. 'yourusername/tcggreedo'
+
+  // ── STATE ─────────────────────────────────────────────────────
+  let inventory = [];
+  let currentTab = 'active';
+  let editingId = null;
+
+  // ── MOCK DATA (remove once connected to real inventory) ───────
+  const MOCK_INVENTORY = [
+    { id:"158375823", name:"Rocket's Snorlax ex", set:"Team Rocket Returns", year:2004, cardNumber:"104/109", grader:"PSA", grade:9, price:450, hiddenPrice:0, quantity:1, sold:0, archived:false, dateAdded:"2026-09-25", image:"158375823-front.jpg" },
+    { id:"49372132", name:"Charizard G LV.X", set:"D&P Black Star Promo", year:2009, cardNumber:"DP45", grader:"PSA", grade:9, price:0, hiddenPrice:800, quantity:1, sold:0, archived:false, dateAdded:"2026-09-25", image:"49372132-front.jpg" },
+    { id:"97589101", name:"Gengar LV.X — Holo", set:"Platinum Arceus", year:2009, cardNumber:"97/99", grader:"PSA", grade:9, price:0, hiddenPrice:0, quantity:1, sold:0, archived:false, dateAdded:"2026-09-25", image:"97589101-front.jpg" },
+    { id:"64798233", name:"Rocket's Zapdos — 1st Ed Holo", set:"Gym Challenge", year:2000, cardNumber:"15/132", grader:"PSA", grade:10, price:0, hiddenPrice:24000, quantity:1, sold:0, archived:false, dateAdded:"2026-09-25", image:"64798233-front.jpg" },
+    { id:"52700342", name:"Lugia — Holo", set:"Call of Legends", year:2011, cardNumber:"SL7", grader:"PSA", grade:9, price:0, hiddenPrice:0, quantity:2, sold:1, archived:false, dateAdded:"2026-09-27", image:"52700342-front.jpg" },
+    { id:"6005494042", name:"Nidoqueen — Rev Holo", set:"Legendary Collection", year:2002, cardNumber:"32/110", grader:"CGC", grade:10, price:0, hiddenPrice:0, quantity:1, sold:0, archived:false, dateAdded:"2026-09-26", image:"6005494042-front.jpg" },
+    { id:"41938720", name:"Pikachu — 1st Ed W Stamp", set:"Jungle", year:1999, cardNumber:"60/64", grader:"PSA", grade:10, price:0, hiddenPrice:0, quantity:1, sold:0, archived:true, dateAdded:"2026-09-26", image:"41938720-front.jpg" },
+  ];
+
+  // ── HELPERS ───────────────────────────────────────────────────
+  const $ = s => document.querySelector(s);
+  const $$ = s => Array.from(document.querySelectorAll(s));
+
+  function getAvailable(s) {
+    const qty = s.quantity || 1;
+    if (s.sold === true) return 0;
+    if (s.sold === false || s.sold === undefined) return qty;
+    return Math.max(0, qty - (s.sold || 0));
+  }
+  function isSoldOut(s) { return getAvailable(s) === 0; }
+
+  function getStatus(s) {
+    if (s.archived) return 'archived';
+    if (isSoldOut(s)) return 'sold';
+    return 'active';
+  }
+
+  function formatPrice(n) {
+    if (!n || n === 0) return 'Offer';
+    return '$' + Number(n).toLocaleString('en-US');
+  }
+
+  function toast(msg) {
+    const t = $('#toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  // ── AUTH ──────────────────────────────────────────────────────
+  function checkPass() {
+    const pass = $('#gatePass').value;
+    if (pass === ADMIN_PASSWORD) {
+      sessionStorage.setItem('tcg_admin', 'true');
+      showDashboard();
+    } else {
+      $('#gateError').style.display = 'block';
+      $('#gatePass').value = '';
+      setTimeout(() => $('#gateError').style.display = 'none', 2000);
+    }
+  }
+
+  function logout() {
+    sessionStorage.removeItem('tcg_admin');
+    $('#dashboard').style.display = 'none';
+    $('#gate').style.display = 'flex';
+    $('#gatePass').value = '';
+  }
+
+  function showDashboard() {
+    $('#gate').style.display = 'none';
+    $('#dashboard').style.display = 'block';
+    loadInventory();
+  }
+
+  // ── LOAD INVENTORY ────────────────────────────────────────────
+  function loadInventory() {
+    // TODO: Replace with GitHub API fetch of inventory.json
+    inventory = JSON.parse(JSON.stringify(MOCK_INVENTORY));
+    updateCounts();
+    renderGrid();
+  }
+
+  // ── STATS + COUNTS ────────────────────────────────────────────
+  function updateCounts() {
+    const active = inventory.filter(s => !s.archived && !isSoldOut(s));
+    const sold = inventory.filter(s => !s.archived && isSoldOut(s));
+    const archived = inventory.filter(s => s.archived);
+    const totalQty = inventory.reduce((sum, s) => sum + (s.quantity || 1), 0);
+
+    $('#countActive').textContent = active.length;
+    $('#countSold').textContent = sold.length;
+    $('#countArchived').textContent = archived.length;
+
+    $('#stats').innerHTML = `
+      <div class="stat-card"><div class="stat-num">${totalQty}</div><div class="stat-label">Total Slabs</div></div>
+      <div class="stat-card"><div class="stat-num">${active.length}</div><div class="stat-label">Listed</div></div>
+      <div class="stat-card"><div class="stat-num">${sold.length}</div><div class="stat-label">Sold</div></div>
+      <div class="stat-card"><div class="stat-num">${archived.length}</div><div class="stat-label">Archived</div></div>
+    `;
+  }
+
+  // ── TABS ──────────────────────────────────────────────────────
+  function switchTab(tab) {
+    currentTab = tab;
+    $$('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+    renderGrid();
+  }
+
+  // ── RENDER GRID ───────────────────────────────────────────────
+  function renderGrid() {
+    const grid = $('#adminGrid');
+    const search = $('#searchInput').value.toLowerCase();
+
+    let items = inventory.filter(s => {
+      const status = getStatus(s);
+      if (status !== currentTab) return false;
+      if (search && !s.name.toLowerCase().includes(search) && !s.set.toLowerCase().includes(search) && !s.id.includes(search)) return false;
+      return true;
+    });
+
+    if (items.length === 0) {
+      grid.innerHTML = `<div class="admin-empty">No ${currentTab} slabs${search ? ' matching "' + search + '"' : ''}</div>`;
+      return;
+    }
+
+    grid.innerHTML = items.map(s => {
+      const status = getStatus(s);
+      const statusLabel = status === 'active' ? 'ACTIVE' : status === 'sold' ? 'SOLD' : 'ARCHIVED';
+      const statusClass = 'status-' + status;
+      return `
+        <div class="admin-card" onclick="openEditPanel('${s.id}')">
+          <div class="admin-card-img">
+            <img src="images/${s.image}" alt="${s.name}" onerror="this.style.display='none'">
+            <span class="admin-card-status ${statusClass}">${statusLabel}</span>
+            <span class="admin-card-grade">${s.grader} ${s.grade}</span>
+          </div>
+          <div class="admin-card-info">
+            <div class="admin-card-name">${s.name}</div>
+            <div class="admin-card-meta">${s.set} · ${s.year}</div>
+            <div class="admin-card-price">${formatPrice(s.price)}</div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  // ── PANEL OPEN/CLOSE ──────────────────────────────────────────
+  function openPanel() {
+    $('#panelOverlay').classList.add('open');
+    $('#panel').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closePanel() {
+    $('#panelOverlay').classList.remove('open');
+    $('#panel').classList.remove('open');
+    document.body.style.overflow = '';
+    editingId = null;
+  }
+
+  // ── ADD SLAB PANEL ────────────────────────────────────────────
+  function openAddPanel() {
+    editingId = null;
+    $('#panelTitle').textContent = 'Add Slab';
+    $('#panelBody').innerHTML = `
+      <div class="upload-zone" id="uploadZone" onclick="$('#fileInput').click()"
+           ondragover="event.preventDefault(); this.classList.add('dragover')"
+           ondragleave="this.classList.remove('dragover')"
+           ondrop="event.preventDefault(); this.classList.remove('dragover'); handleUpload(event.dataTransfer.files[0])">
+        <div class="upload-zone-icon">📸</div>
+        <div class="upload-zone-text">Tap to upload slab scan</div>
+        <div class="upload-zone-hint">Photo of PSA/CGC label — we'll read it automatically</div>
+      </div>
+      <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleUpload(this.files[0])">
+
+      <div class="upload-preview" id="uploadPreview">
+        <img id="previewImg">
+      </div>
+
+      <div class="parsing-indicator" id="parsing">
+        <div class="parsing-spinner"></div>
+        Reading slab label...
+      </div>
+
+      <div id="slabFields" style="display:none;">
+        <div class="field-row">
+          <div class="field">
+            <label class="field-label">Card Name</label>
+            <input class="field-input" id="fName" placeholder="Charizard">
+          </div>
+          <div class="field">
+            <label class="field-label">Set</label>
+            <input class="field-input" id="fSet" placeholder="Base Set">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label class="field-label">Year</label>
+            <input class="field-input" id="fYear" type="number" placeholder="1999">
+          </div>
+          <div class="field">
+            <label class="field-label">Card #</label>
+            <input class="field-input" id="fCardNum" placeholder="4/102">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label class="field-label">Grader</label>
+            <select class="field-select" id="fGrader">
+              <option value="PSA">PSA</option>
+              <option value="CGC">CGC</option>
+              <option value="BGS">BGS</option>
+              <option value="TAG">TAG</option>
+              <option value="ACE">ACE</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="field-label">Grade</label>
+            <input class="field-input" id="fGrade" type="number" step="0.5" placeholder="10">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label class="field-label">Cert #</label>
+            <input class="field-input" id="fCert" placeholder="12345678">
+          </div>
+          <div class="field">
+            <label class="field-label">Quantity</label>
+            <input class="field-input" id="fQty" type="number" value="1" min="1">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label class="field-label">Price ($0 = Offer)</label>
+            <input class="field-input" id="fPrice" type="number" placeholder="0" value="0">
+          </div>
+          <div class="field">
+            <label class="field-label">Hidden Price (sort only)</label>
+            <input class="field-input" id="fHidden" type="number" placeholder="0" value="0">
+          </div>
+        </div>
+
+        <div class="panel-actions">
+          <button class="btn btn-primary" onclick="saveSlab()">Publish Slab</button>
+          <button class="btn btn-secondary" onclick="closePanel()">Cancel</button>
+        </div>
+      </div>
+
+      <div style="text-align:center; margin-top:16px;">
+        <button style="font-size:12px; color:var(--subtle); text-decoration:underline; background:none; border:none; cursor:pointer;" onclick="skipUpload()">Skip photo — enter details manually</button>
+      </div>
+    `;
+    openPanel();
+  }
+
+  // ── EDIT SLAB PANEL ───────────────────────────────────────────
+  function openEditPanel(id) {
+    const s = inventory.find(x => x.id === id);
+    if (!s) return;
+    editingId = id;
+    const status = getStatus(s);
+
+    $('#panelTitle').textContent = 'Edit Slab';
+    $('#panelBody').innerHTML = `
+      <div class="detail-img-wrap">
+        <img src="images/${s.image}" alt="${s.name}" onerror="this.parentNode.style.display='none'">
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">Card Name</label>
+          <input class="field-input" id="fName" value="${s.name}">
+        </div>
+        <div class="field">
+          <label class="field-label">Set</label>
+          <input class="field-input" id="fSet" value="${s.set}">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">Year</label>
+          <input class="field-input" id="fYear" type="number" value="${s.year}">
+        </div>
+        <div class="field">
+          <label class="field-label">Card #</label>
+          <input class="field-input" id="fCardNum" value="${s.cardNumber}">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">Grader</label>
+          <select class="field-select" id="fGrader">
+            <option value="PSA" ${s.grader==='PSA'?'selected':''}>PSA</option>
+            <option value="CGC" ${s.grader==='CGC'?'selected':''}>CGC</option>
+            <option value="BGS" ${s.grader==='BGS'?'selected':''}>BGS</option>
+            <option value="TAG" ${s.grader==='TAG'?'selected':''}>TAG</option>
+            <option value="ACE" ${s.grader==='ACE'?'selected':''}>ACE</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label">Grade</label>
+          <input class="field-input" id="fGrade" type="number" step="0.5" value="${s.grade}">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">Cert #</label>
+          <input class="field-input" id="fCert" value="${s.id}" disabled style="opacity:0.5;">
+        </div>
+        <div class="field">
+          <label class="field-label">Quantity</label>
+          <input class="field-input" id="fQty" type="number" value="${s.quantity || 1}" min="1">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">Price ($0 = Offer)</label>
+          <input class="field-input" id="fPrice" type="number" value="${s.price}">
+        </div>
+        <div class="field">
+          <label class="field-label">Hidden Price</label>
+          <input class="field-input" id="fHidden" type="number" value="${s.hiddenPrice || 0}">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">Sold Count</label>
+          <input class="field-input" id="fSold" type="number" value="${typeof s.sold === 'number' ? s.sold : 0}" min="0">
+        </div>
+        <div class="field">
+          <label class="field-label">Status</label>
+          <div style="padding-top:8px; font-size:13px; font-weight:600; color:${status==='active'?'var(--green)':status==='sold'?'var(--red)':'var(--gold)'};">${status.toUpperCase()}</div>
+        </div>
+      </div>
+
+      <div class="panel-actions">
+        <button class="btn btn-primary" onclick="updateSlab()">Save Changes</button>
+      </div>
+      <div class="panel-actions">
+        ${!isSoldOut(s) && !s.archived ? '<button class="btn" style="background:transparent; border:1px solid rgba(74,255,139,0.3); color:var(--green);" onclick="markSold()">Mark Sold</button>' : ''}
+        ${!s.archived ? '<button class="btn btn-archive" onclick="archiveSlab()">Archive</button>' : '<button class="btn btn-secondary" onclick="unarchiveSlab()">Reactivate</button>'}
+        <button class="btn btn-danger" onclick="deleteSlab()">Delete</button>
+      </div>
+    `;
+    openPanel();
+  }
+
+  // ── UPLOAD + PARSE ────────────────────────────────────────────
+  let uploadedImageData = null;
+
+  function handleUpload(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      uploadedImageData = e.target.result;
+      $('#uploadPreview').classList.add('show');
+      $('#previewImg').src = uploadedImageData;
+      $('#uploadZone').style.display = 'none';
+      parseSlab(uploadedImageData);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function skipUpload() {
+    $('#uploadZone').style.display = 'none';
+    $('#slabFields').style.display = 'block';
+  }
+
+  async function parseSlab(imageData) {
+    $('#parsing').classList.add('show');
+
+    // TODO: Replace with real Claude API call
+    // Simulating a parse delay + mock response
+    await new Promise(r => setTimeout(r, 1500));
+
+    // Mock parsed data (replace with actual API response)
+    const parsed = {
+      name: 'Parsed Card Name',
+      set: 'Parsed Set',
+      year: 2024,
+      cardNumber: '001/100',
+      grader: 'PSA',
+      grade: 9,
+      cert: '99999999'
+    };
+
+    $('#parsing').classList.remove('show');
+    $('#slabFields').style.display = 'block';
+
+    // Fill fields
+    $('#fName').value = parsed.name;
+    $('#fName').classList.add('auto-filled');
+    $('#fSet').value = parsed.set;
+    $('#fSet').classList.add('auto-filled');
+    $('#fYear').value = parsed.year;
+    $('#fYear').classList.add('auto-filled');
+    $('#fCardNum').value = parsed.cardNumber;
+    $('#fCardNum').classList.add('auto-filled');
+    $('#fGrader').value = parsed.grader;
+    $('#fGrade').value = parsed.grade;
+    $('#fGrade').classList.add('auto-filled');
+    $('#fCert').value = parsed.cert;
+    $('#fCert').classList.add('auto-filled');
+  }
+
+  // ── SAVE / UPDATE / ARCHIVE / DELETE ──────────────────────────
+  function saveSlab() {
+    const slab = {
+      id: $('#fCert').value,
+      name: $('#fName').value,
+      set: $('#fSet').value,
+      year: parseInt($('#fYear').value),
+      cardNumber: $('#fCardNum').value,
+      grader: $('#fGrader').value,
+      grade: parseFloat($('#fGrade').value),
+      price: parseInt($('#fPrice').value) || 0,
+      hiddenPrice: parseInt($('#fHidden').value) || 0,
+      quantity: parseInt($('#fQty').value) || 1,
+      sold: 0,
+      archived: false,
+      dateAdded: new Date().toISOString().split('T')[0],
+      image: $('#fCert').value + '-front.jpg'
+    };
+
+    if (!slab.id || !slab.name) {
+      toast('Name and Cert # are required');
+      return;
+    }
+
+    inventory.push(slab);
+    // TODO: Commit to GitHub
+    updateCounts();
+    renderGrid();
+    closePanel();
+    toast('Slab published');
+  }
+
+  function updateSlab() {
+    const s = inventory.find(x => x.id === editingId);
+    if (!s) return;
+    s.name = $('#fName').value;
+    s.set = $('#fSet').value;
+    s.year = parseInt($('#fYear').value);
+    s.cardNumber = $('#fCardNum').value;
+    s.grader = $('#fGrader').value;
+    s.grade = parseFloat($('#fGrade').value);
+    s.price = parseInt($('#fPrice').value) || 0;
+    s.hiddenPrice = parseInt($('#fHidden').value) || 0;
+    s.quantity = parseInt($('#fQty').value) || 1;
+    s.sold = parseInt($('#fSold').value) || 0;
+    // TODO: Commit to GitHub
+    updateCounts();
+    renderGrid();
+    closePanel();
+    toast('Slab updated');
+  }
+
+  function markSold() {
+    const s = inventory.find(x => x.id === editingId);
+    if (!s) return;
+    const qty = s.quantity || 1;
+    const currentSold = typeof s.sold === 'number' ? s.sold : 0;
+    if (currentSold >= qty) { toast('Already fully sold'); return; }
+    s.sold = currentSold + 1;
+    s.soldDate = new Date().toISOString().split('T')[0];
+    // TODO: Commit to GitHub
+    updateCounts();
+    renderGrid();
+    closePanel();
+    toast(getAvailable(s) > 0 ? 'Marked 1 sold — ' + getAvailable(s) + ' remaining' : 'Sold out');
+  }
+  function archiveSlab() {
+    const s = inventory.find(x => x.id === editingId);
+    if (!s) return;
+    s.archived = true;
+    // TODO: Commit to GitHub
+    updateCounts();
+    renderGrid();
+    closePanel();
+    toast('Slab archived');
+  }
+
+  function unarchiveSlab() {
+    const s = inventory.find(x => x.id === editingId);
+    if (!s) return;
+    s.archived = false;
+    // TODO: Commit to GitHub
+    updateCounts();
+    renderGrid();
+    closePanel();
+    toast('Slab reactivated');
+  }
+
+  function deleteSlab() {
+    if (!confirm('Permanently delete this slab?')) return;
+    inventory = inventory.filter(x => x.id !== editingId);
+    // TODO: Commit to GitHub
+    updateCounts();
+    renderGrid();
+    closePanel();
+    toast('Slab deleted');
+  }
+
+  // ── INIT ──────────────────────────────────────────────────────
+  if (sessionStorage.getItem('tcg_admin') === 'true') {
+    showDashboard();
+  }
+  </script>
+
+</body>
+</html>

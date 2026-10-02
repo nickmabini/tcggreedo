@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — TCG Greedo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #08040d;
+      --surface: #12091c;
+      --border: #2a1a3d;
+      --text: #f5f0ff;
+      --subtle: #7a6b8f;
+      --muted: #4a3d5f;
+      --purple: #8b3fbf;
+      --purple-neon: #c77dff;
+      --purple-deep: #4a1a6b;
+      --purple-dim: rgba(139, 63, 191, 0.15);
+      --display: 'Russo One', 'Impact', sans-serif;
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'Inter', -apple-system, sans-serif;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* NAV */
+    .nav {
+      background: rgba(8, 4, 13, 0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 80px;
+    }
+    .logo {
+      font-family: var(--display);
+      font-size: clamp(28px, 4vw, 40px);
+      font-style: italic;
+      letter-spacing: 2px;
+      background: linear-gradient(180deg, #ffffff 0%, #f0e0ff 40%, #c77dff 70%, #8b3fbf 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 2px 8px rgba(139, 63, 191, 0.6));
+      padding: 0 12px;
+    }
+
+    /* MAIN */
+    .main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 24px;
+    }
+    .contact-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 48px 40px;
+      max-width: 560px;
+      width: 100%;
+    }
+    .contact-title {
+      font-family: var(--display);
+      font-size: 28px;
+      letter-spacing: 3px;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .contact-sub {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 15px;
+      color: var(--subtle);
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .form-field { display: flex; flex-direction: column; gap: 6px; }
+    .form-field.full { grid-column: 1 / -1; }
+    .form-label {
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--subtle);
+    }
+    .form-input, .form-textarea {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 12px 14px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+    .form-input:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--purple-neon);
+      box-shadow: 0 0 0 3px rgba(199, 125, 255, 0.1);
+    }
+    .form-textarea { resize: vertical; min-height: 120px; }
+    .form-submit {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--purple) 0%, var(--purple-neon) 100%);
+      color: #fff;
+      font-family: var(--display);
+      font-size: 12px;
+      letter-spacing: 2px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(139, 63, 191, 0.4);
+    }
+    .form-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 28px rgba(199, 125, 255, 0.6);
+    }
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 28px 0;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 2px;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .ig-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 14px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .ig-button:hover {
+      border-color: var(--purple-neon);
+      color: var(--purple-neon);
+    }
+
+    /* FOOTER */
+    .footer {
+      background: #000;
+      border-top: 1px solid var(--border);
+      padding: 24px;
+      text-align: center;
+    }
+    .footer-brand {
+      font-family: var(--display);
+      font-style: italic;
+      font-size: 14px;
+      background: linear-gradient(180deg, #ffffff 0%, #c77dff 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 2px;
+    }
+    .footer-links {
+      margin-top: 12px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      font-size: 12px;
+      color: var(--subtle);
+    }
+    .footer-links a:hover { color: var(--purple-neon); }
+
+    @media (max-width: 600px) {
+      .contact-card { padding: 32px 20px; }
+      .form-row { grid-template-columns: 1fr; }
+      .contact-title { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <div style="display:grid; grid-template-columns:48px 1fr 48px; align-items:center; width:100%; max-width:1400px;">
+          <span class="hamburger" onclick="document.getElementById('menuOverlay').classList.add('open'); document.getElementById('menuPanel').classList.add('open'); document.body.style.overflow='hidden';" style="font-size:28px; color:#f5f0ff; cursor:pointer; padding:4px 12px;">☰</span>
+          <a href="index.html" class="logo" style="text-align:center;">TCGGREEDO</a>
+          <span></span>
+        </div>
+      </nav>
+    
+      <div id="menuOverlay" onclick="this.classList.remove('open'); document.getElementById('menuPanel').classList.remove('open'); document.body.style.overflow='';" style="position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:150; opacity:0; pointer-events:none; transition:opacity 0.3s;"></div>
+      <div id="menuPanel" style="position:fixed; top:0; left:-320px; width:300px; height:100%; background:#12091c; border-right:1px solid #2a1a3d; z-index:151; padding:24px; overflow-y:auto; transition:left 0.3s ease;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+          <span style="font-family:'Russo One',sans-serif; font-size:16px; letter-spacing:2px; color:#c77dff;">MENU</span>
+          <button onclick="document.getElementById('menuOverlay').classList.remove('open'); document.getElementById('menuPanel').classList.remove('open'); document.body.style.overflow='';" style="background:none; border:none; color:#f5f0ff; font-size:24px; cursor:pointer;">×</button>
+        </div>
+        <a href="index.html" style="display:block; padding:12px 0; font-size:13px; letter-spacing:1px; color:#f5f0ff; border-bottom:1px solid #2a1a3d; text-decoration:none;">Shop</a>
+        <a href="reviews.html" style="display:block; padding:12px 0; font-size:13px; letter-spacing:1px; color:#f5f0ff; border-bottom:1px solid #2a1a3d; text-decoration:none;">Reviews</a>
+        <a href="contact.html" style="display:block; padding:12px 0; font-size:13px; letter-spacing:1px; color:#f5f0ff; border-bottom:1px solid #2a1a3d; text-decoration:none;">Contact Us</a>
+      </div>
+    
+      <style>
+        #menuOverlay.open { opacity: 1 !important; pointer-events: auto !important; }
+        #menuPanel.open { left: 0 !important; }
+        .hamburger:hover { color: #c77dff !important; }
+      </style>
+
+  <main class="main">
+    <div class="contact-card">
+        <h1 class="contact-title">GET IN TOUCH</h1>
+        <p class="contact-sub">Buying, selling, or trading — we're here for it.</p>
+
+      <form name="contact" method="POST" netlify>
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label" for="contactName">Name</label>
+            <input class="form-input" type="text" id="contactName" name="name" required>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="contactHandle">IG Handle / Email / Phone Number</label>
+            <input class="form-input" type="text" id="contactHandle" name="contact" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-field full">
+            <label class="form-label" for="contactMessage">Message</label>
+            <textarea class="form-textarea" id="contactMessage" name="message" required placeholder="Looking to buy? Selling slabs? Include card names, cert numbers, and prices if applicable."></textarea>
+          </div>
+        </div>
+        <button type="submit" class="form-submit">SEND MESSAGE</button>
+      </form>
+
+      <div class="divider">OR</div>
+
+      <a href="https://ig.me/m/tcggreedo" target="_blank" rel="noopener" class="ig-button">
+        <span>📸</span>
+        <span>DM @tcggreedo on Instagram</span>
+      </a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <a href="index.html" class="footer-brand">TCGGREEDO</a>
+    <div class="footer-links">
+      <a href="https://instagram.com/tcggreedo" target="_blank" rel="noopener">Instagram</a>
+      <a href="index.html#sell">Sell Your Slabs</a>
+      <a href="index.html">Shop</a>
+    </div>
+  </footer>
+
+</body>
+</html>

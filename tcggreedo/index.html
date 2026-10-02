@@ -1,0 +1,2434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TCG Greedo — Graded Pokémon Slabs</title>
+  <meta name="description" content="TCG Greedo — curated PSA, CGC, and BGS graded Pokémon slabs. Authenticated inventory from a trusted collector.">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="TCG Greedo — Graded Pokémon Slabs">
+  <meta property="og:description" content="Curated PSA, CGC, and BGS graded Pokémon slabs from a trusted collector.">
+  <meta property="og:type" content="website">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ═══════════════════════════════════════════════════════════
+       RESET + TOKENS
+       ═══════════════════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      /* Backgrounds */
+      --bg: #08040d;
+      --surface: #12091c;
+      --surface2: #1a0f28;
+      --border: #2a1a3d;
+      --border-hover: #4a2a6b;
+
+      /* Text */
+      --text: #f5f0ff;
+      --subtle: #7a6b8f;
+      --muted: #4a3d5f;
+
+      /* Purple accents */
+      --purple: #8b3fbf;
+      --purple-neon: #c77dff;
+      --purple-deep: #4a1a6b;
+      --purple-dim: rgba(139, 63, 191, 0.15);
+      --purple-glow: rgba(199, 125, 255, 0.4);
+
+      /* Status */
+      --red: #ff4a6b;
+      --gold: #ffd76b;
+
+      /* Fonts */
+      --display: 'Russo One', 'Impact', sans-serif;
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'Inter', -apple-system, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    a { text-decoration: none; color: inherit; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+
+    /* ═══════════════════════════════════════════════════════════
+       TOP BAR (contact strip)
+       ═══════════════════════════════════════════════════════════ */
+    .top-bar {
+      background: #000;
+      border-bottom: 1px solid var(--border);
+      padding: 10px 24px;
+      font-size: 12px;
+      color: var(--subtle);
+    }
+    .top-bar-inner {
+      max-width: 1400px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 20px;
+    }
+    .top-bar-left { display: flex; align-items: center; gap: 24px; }
+    .top-bar-item {
+      display: inline-flex; align-items: center; gap: 6px;
+      transition: color 0.2s;
+    }
+    .top-bar-item:hover { color: var(--purple-neon); }
+    .top-bar-right {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: var(--text);
+      font-weight: 500;
+    }
+    .shield-icon { color: var(--purple-neon); }
+
+    /* ═══════════════════════════════════════════════════════════
+       NAV
+       ═══════════════════════════════════════════════════════════ */
+    nav {
+      background: rgba(8, 4, 13, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 1400px; margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      min-height: 100px;
+      gap: 20px;
+    }
+    .nav-left, .nav-right {
+      display: flex; align-items: center;
+      gap: 22px;
+    }
+    .nav-right { justify-content: flex-end; }
+    .nav-link {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      color: var(--text);
+      transition: color 0.2s;
+      position: relative;
+      padding: 6px 0;
+      cursor: pointer;
+    }
+    .nav-link:hover { color: var(--purple-neon); }
+    .nav-link.dropdown::after {
+      content: '▾';
+      font-size: 10px;
+      margin-left: 4px;
+      color: var(--subtle);
+    }
+    .hamburger {
+      font-size: 28px; color: var(--text);
+      cursor: pointer;
+      padding: 4px 12px;
+    }
+    .hamburger:hover { color: var(--purple-neon); }
+
+    /* LOGO — TCGGREEDO wordmark */
+    .logo {
+      font-family: var(--display);
+      font-size: clamp(28px, 4vw, 44px);
+      font-style: italic;
+      letter-spacing: 2px;
+      background: linear-gradient(180deg, #ffffff 0%, #f0e0ff 40%, #c77dff 70%, #8b3fbf 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 40px rgba(199, 125, 255, 0.5);
+      filter: drop-shadow(0 2px 8px rgba(139, 63, 191, 0.6));
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+      padding: 0 12px;
+    }
+
+    /* Nav icons on right (search, cart placeholder — cosmetic) */
+    .nav-icon {
+      font-size: 16px;
+      color: var(--text);
+      cursor: pointer;
+      transition: color 0.2s;
+      padding: 4px;
+    }
+    .nav-icon:hover { color: var(--purple-neon); }
+
+    /* ═══════════════════════════════════════════════════════════
+       HERO CAROUSEL
+       ═══════════════════════════════════════════════════════════ */
+    .hero {
+      position: relative;
+      height: clamp(420px, 65vh, 640px);
+      overflow: hidden;
+      background: radial-gradient(ellipse at center, var(--purple-deep) 0%, var(--bg) 70%);
+    }
+    .hero-slide {
+      position: absolute; inset: 0;
+      display: flex; align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.8s ease-in-out;
+      padding: 0 60px;
+    }
+    .hero-slide.active { opacity: 1; pointer-events: auto; }
+    .hero-slide-content {
+      max-width: 1400px; margin: 0 auto;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+    .hero-text-block {
+      z-index: 2;
+    }
+    .hero-eyebrow {
+      font-family: var(--display);
+      font-size: 13px;
+      letter-spacing: 3px;
+      color: var(--purple-neon);
+      margin-bottom: 20px;
+      text-shadow: 0 0 20px var(--purple-glow);
+    }
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(38px, 5vw, 68px);
+      font-weight: 500;
+      line-height: 1.05;
+      margin-bottom: 16px;
+      letter-spacing: -0.5px;
+    }
+    .hero-subtitle {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 18px;
+      color: var(--subtle);
+      margin-bottom: 32px;
+      letter-spacing: 1px;
+    }
+    .hero-cta {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 14px 28px;
+      background: linear-gradient(135deg, var(--purple) 0%, var(--purple-neon) 100%);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      border-radius: 4px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(139, 63, 191, 0.4);
+    }
+    .hero-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 28px rgba(199, 125, 255, 0.6);
+    }
+    .hero-image-wrap {
+      display: flex; justify-content: center; align-items: center;
+      height: 100%;
+      position: relative;
+    }
+    .hero-image {
+      max-height: 480px;
+      max-width: 100%;
+      filter: drop-shadow(0 20px 40px rgba(199, 125, 255, 0.4));
+      transition: transform 0.6s;
+    }
+    .hero-image-wrap::before {
+      content: '';
+      position: absolute;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, var(--purple-glow) 0%, transparent 70%);
+      z-index: 0;
+      pointer-events: none;
+    }
+    .hero-arrow {
+      position: absolute;
+      top: 50%; transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      cursor: pointer;
+      z-index: 10;
+      transition: all 0.2s;
+    }
+    .hero-arrow:hover {
+      background: var(--purple);
+      border-color: var(--purple-neon);
+      box-shadow: 0 0 20px var(--purple-glow);
+    }
+    .hero-arrow.left { left: 20px; }
+    .hero-arrow.right { right: 20px; }
+    .hero-dots {
+      position: absolute;
+      bottom: 24px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 10px;
+      z-index: 10;
+    }
+    .hero-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .hero-dot.active {
+      background: var(--purple-neon);
+      box-shadow: 0 0 10px var(--purple-glow);
+      transform: scale(1.3);
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       SECTIONS (shared)
+       ═══════════════════════════════════════════════════════════ */
+    section {
+      padding: 90px 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .section-title {
+      font-family: var(--display);
+      font-size: clamp(24px, 3vw, 34px);
+      letter-spacing: 3px;
+      text-align: center;
+      margin-bottom: 50px;
+      color: var(--text);
+    }
+    .section-subtitle {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 16px;
+      text-align: center;
+      color: var(--subtle);
+      margin-top: -35px;
+      margin-bottom: 50px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       SHOP BY SET
+       ═══════════════════════════════════════════════════════════ */
+    .set-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+    .set-tile {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 50px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .set-tile::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, var(--purple-dim) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    @media (hover: hover) {
+      .set-tile:hover {
+        border-color: var(--purple-neon);
+        transform: translateY(-4px);
+        box-shadow: 0 8px 30px rgba(139, 63, 191, 0.3);
+      }
+    }
+    .set-tile.active {
+      border-color: var(--purple-neon);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 30px rgba(139, 63, 191, 0.3);
+    }
+    .set-tile:hover::before { opacity: 1; }
+    .set-tile-name {
+      font-family: var(--serif);
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--text);
+      position: relative;
+      z-index: 1;
+    }
+    .set-tile-count {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--subtle);
+      margin-top: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       SHOP BY GRADE (pill row)
+       ═══════════════════════════════════════════════════════════ */
+    .grade-row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+    .grade-pill {
+      display: inline-flex; flex-direction: column; align-items: center;
+      padding: 20px 28px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      min-width: 120px;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+    @media (hover: hover) {
+      .grade-pill:hover {
+        border-color: var(--purple-neon);
+        background: var(--surface2);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(139, 63, 191, 0.3);
+      }
+    }
+    .grade-pill.active {
+      border-color: var(--purple-neon);
+      background: var(--surface2);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(139, 63, 191, 0.3);
+    }
+    .grade-pill-num {
+      font-family: var(--display);
+      font-size: 22px;
+      background: linear-gradient(180deg, var(--text) 0%, var(--purple-neon) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1;
+    }
+    .grade-pill-label {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--subtle);
+      margin-top: 6px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       INVENTORY GRID (slab cards)
+       ═══════════════════════════════════════════════════════════ */
+    .inventory-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 24px;
+    }
+    .slab-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex; flex-direction: column;
+      position: relative;
+    }
+    .slab-card:hover {
+      border-color: var(--purple-neon);
+      transform: translateY(-4px);
+      box-shadow: 0 10px 30px rgba(139, 63, 191, 0.4);
+    }
+    .slab-card-image-wrap {
+      position: relative;
+      background: #000;
+      aspect-ratio: 3/4;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .slab-card-image {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      transition: transform 0.4s;
+    }
+    .slab-card:hover .slab-card-image { transform: scale(1.04); }
+    .slab-card-grade-badge {
+      position: absolute; top: 12px; right: 12px;
+      background: rgba(0, 0, 0, 0.85);
+      border: 1px solid var(--purple-neon);
+      color: var(--purple-neon);
+      font-family: var(--display);
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 4px;
+      letter-spacing: 1px;
+      box-shadow: 0 0 15px rgba(199, 125, 255, 0.4);
+    }
+    .slab-card-info {
+      padding: 18px 16px;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .slab-card-set {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--subtle);
+    }
+    .slab-card-name {
+      font-family: var(--serif);
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.3;
+    }
+    .slab-card-price {
+      font-family: var(--display);
+      font-size: 18px;
+      color: var(--purple-neon);
+      margin-top: 6px;
+      letter-spacing: 1px;
+    }
+    .sold-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 5;
+      overflow: hidden;
+    }
+    .sold-overlay::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: -20%;
+      width: 140%;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.4);
+      transform: rotate(-35deg);
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
+    }
+    .sold-stamp {
+      font-family: var(--display);
+      font-size: 22px;
+      letter-spacing: 6px;
+      color: rgba(255, 255, 255, 0.75);
+      padding: 10px 20px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+      position: relative;
+      z-index: 1;
+    }
+    .slab-card.sold .slab-card-price {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--subtle);
+      grid-column: 1 / -1;
+    }
+    .empty-state-title {
+      font-family: var(--serif);
+      font-size: 22px;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    /* Filter bar (above inventory grid) */
+    .filter-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+      padding: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .filter-label {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--subtle);
+    }
+    .filter-select {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: inherit;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .filter-select:hover, .filter-select:focus {
+      border-color: var(--purple-neon);
+      outline: none;
+    }
+    .filter-clear {
+      font-size: 11px;
+      color: var(--purple-neon);
+      cursor: pointer;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 4px 8px;
+    }
+    .filter-clear:hover { color: var(--text); }
+
+    /* ═══════════════════════════════════════════════════════════
+       TRUST BADGES
+       ═══════════════════════════════════════════════════════════ */
+    .trust-section {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 60px 24px;
+      margin: 0;
+      max-width: none;
+    }
+    .trust-inner {
+      max-width: 1400px; margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 30px;
+      text-align: center;
+    }
+    .trust-item {
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
+    }
+    .trust-icon {
+      font-size: 32px;
+      color: var(--purple-neon);
+      filter: drop-shadow(0 0 12px var(--purple-glow));
+    }
+    .trust-title {
+      font-family: var(--display);
+      font-size: 13px;
+      letter-spacing: 2px;
+      color: var(--text);
+    }
+    .trust-sub {
+      font-size: 12px;
+      color: var(--subtle);
+      max-width: 200px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       REVIEWS
+       ═══════════════════════════════════════════════════════════ */
+       .reviews-track {
+      display: flex;
+      gap: 24px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+      padding: 4px 0;
+    }
+    .reviews-track::-webkit-scrollbar { display: none; }
+    .review-arrow {
+      position: absolute;
+      top: 50%; transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      cursor: pointer;
+      z-index: 10;
+      transition: all 0.2s;
+    }
+    .review-arrow:hover {
+      background: var(--purple);
+      border-color: var(--purple-neon);
+      box-shadow: 0 0 20px var(--purple-glow);
+    }
+    .review-arrow-left { left: -16px; }
+    .review-arrow-right { right: -16px; }
+    .review-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 28px 24px;
+      position: relative;
+      width: calc((100% - 48px) / 3);
+      min-width: 280px;
+      scroll-snap-align: start;
+      flex-shrink: 0;
+    }
+    .review-quote {
+      position: absolute;
+      top: 12px; left: 20px;
+      font-family: var(--serif);
+      font-size: 60px;
+      color: var(--purple);
+      line-height: 1;
+      opacity: 0.5;
+    }
+    .review-stars {
+      color: var(--gold);
+      font-size: 14px;
+      margin-bottom: 12px;
+      letter-spacing: 2px;
+    }
+    .review-body {
+      font-family: var(--serif);
+      font-size: 15px;
+      font-style: italic;
+      color: var(--text);
+      line-height: 1.6;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+    .review-author {
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--purple-neon);
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       SELL YOUR SLABS
+       ═══════════════════════════════════════════════════════════ */
+    .sell-section {
+      background: linear-gradient(180deg, var(--bg) 0%, var(--purple-deep) 100%);
+      max-width: none;
+      padding: 90px 24px;
+      margin: 0;
+    }
+    .sell-inner {
+      max-width: 1000px; margin: 0 auto;
+    }
+    .sell-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 30px;
+      margin-bottom: 50px;
+    }
+    .sell-step {
+      text-align: center;
+    }
+    .sell-step-num {
+      font-family: var(--display);
+      font-size: 48px;
+      background: linear-gradient(180deg, var(--purple-neon) 0%, var(--purple) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 30px var(--purple-glow);
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+    .sell-step-title {
+      font-family: var(--serif);
+      font-size: 22px;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .sell-step-body {
+      font-size: 13px;
+      color: var(--subtle);
+      max-width: 220px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+    .sell-form {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 40px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .form-field {
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .form-field.full { grid-column: 1 / -1; }
+    .form-label {
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--subtle);
+    }
+    .form-input, .form-textarea {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 12px 14px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+    .form-input:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--purple-neon);
+      box-shadow: 0 0 0 3px rgba(199, 125, 255, 0.1);
+    }
+    .form-textarea {
+      resize: vertical;
+      min-height: 120px;
+      font-family: inherit;
+    }
+    .form-submit {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 32px;
+      background: linear-gradient(135deg, var(--purple) 0%, var(--purple-neon) 100%);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border-radius: 6px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(139, 63, 191, 0.4);
+      margin-top: 20px;
+    }
+    .form-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 28px rgba(199, 125, 255, 0.6);
+    }
+    .form-success {
+      display: none;
+      background: var(--purple-dim);
+      border: 1px solid var(--purple-neon);
+      color: var(--purple-neon);
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      margin-top: 20px;
+    }
+    .form-success.show { display: block; }
+
+    /* ═══════════════════════════════════════════════════════════
+       CONTACT SECTION
+       ═══════════════════════════════════════════════════════════ */
+    .contact-section {
+      text-align: center;
+      padding: 80px 24px;
+    }
+    .contact-title {
+      font-family: var(--display);
+      font-size: 28px;
+      letter-spacing: 3px;
+      margin-bottom: 16px;
+    }
+    .contact-sub {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 17px;
+      color: var(--subtle);
+      margin-bottom: 32px;
+    }
+    .contact-cta {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 16px 36px;
+      background: linear-gradient(135deg, var(--purple) 0%, var(--purple-neon) 100%);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border-radius: 6px;
+      box-shadow: 0 4px 20px rgba(139, 63, 191, 0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .contact-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 28px rgba(199, 125, 255, 0.6);
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       FOOTER
+       ═══════════════════════════════════════════════════════════ */
+    footer {
+      background: #000;
+      border-top: 1px solid var(--border);
+      padding: 40px 24px;
+    }
+    .footer-inner {
+      max-width: 1400px; margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .footer-brand {
+      font-family: var(--display);
+      font-style: italic;
+      font-size: 16px;
+      background: linear-gradient(180deg, #ffffff 0%, #c77dff 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 2px;
+    }
+    .footer-links {
+      display: flex; gap: 24px;
+      font-size: 12px;
+      color: var(--subtle);
+      letter-spacing: 1px;
+    }
+    .footer-links a:hover { color: var(--purple-neon); }
+    .footer-copy {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 1px;
+    }
+
+
+    /* ═══════════════════════════════════════════════════════════
+       HAMBURGER MENU
+       ═══════════════════════════════════════════════════════════ */
+       .menu-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 150;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .menu-overlay.open { opacity: 1; pointer-events: auto; }
+    .menu-panel {
+      position: fixed;
+      top: 0; left: -320px;
+      width: 300px;
+      height: 100%;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      z-index: 151;
+      padding: 24px;
+      overflow-y: auto;
+      transition: left 0.3s ease;
+    }
+    .menu-panel.open { left: 0; }
+    .menu-filter-group { margin-bottom: 10px; }
+    .menu-filter-label {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--subtle);
+      margin-bottom: 6px;
+    }
+    .menu-filter-select {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-family: inherit;
+      cursor: pointer;
+    }
+    .menu-filter-select:focus { border-color: var(--purple-neon); outline: none; }
+    .menu-nav-link {
+      padding: 10px 0;
+      font-size: 13px;
+      letter-spacing: 1px;
+      color: var(--text);
+      cursor: pointer;
+      border-bottom: 1px solid var(--border);
+      transition: color 0.2s;
+    }
+    .menu-nav-link:hover { color: var(--purple-neon); }    
+    /* ═══════════════════════════════════════════════════════════
+       MODAL (slab detail view)
+       ═══════════════════════════════════════════════════════════ */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 200;
+      display: none;
+      align-items: center; justify-content: center;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border-hover);
+      border-radius: 12px;
+      max-width: 900px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(139, 63, 191, 0.3);
+    }
+    .modal-close {
+      position: absolute;
+      top: 16px; right: 16px;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      z-index: 10;
+      transition: all 0.2s;
+    }
+    .modal-close:hover {
+      background: var(--purple);
+      border-color: var(--purple-neon);
+    }
+    .modal-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      padding: 40px;
+    }
+    .modal-image-wrap {
+      background: #000;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+      position: relative;
+      min-height: 300px;
+      max-height: 70vh;
+    }
+    .modal-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    .modal-info {
+      display: flex; flex-direction: column;
+      justify-content: space-between;
+    }
+    .modal-grade-line {
+      font-family: var(--display);
+      font-size: 14px;
+      color: var(--purple-neon);
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+    .modal-name {
+      font-family: var(--serif);
+      font-size: 32px;
+      font-weight: 500;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .modal-details {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 8px 16px;
+      margin-bottom: 24px;
+      font-size: 13px;
+    }
+    .modal-details dt {
+      color: var(--subtle);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-size: 11px;
+      align-self: center;
+    }
+    .modal-details dd {
+      color: var(--text);
+    }
+    .modal-details dd a {
+      color: var(--purple-neon);
+      text-decoration: underline;
+    }
+    .modal-price {
+      font-family: var(--display);
+      font-size: 36px;
+      color: var(--purple-neon);
+      letter-spacing: 2px;
+      margin-bottom: 24px;
+      text-shadow: 0 0 20px var(--purple-glow);
+    }
+    .modal-price.sold {
+      text-decoration: line-through;
+      color: var(--muted);
+      text-shadow: none;
+    }
+    .modal-sold-tag {
+      display: inline-block;
+      background: var(--red);
+      color: #fff;
+      font-family: var(--display);
+      font-size: 12px;
+      padding: 6px 14px;
+      border-radius: 4px;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+    .modal-cta-row {
+      display: flex; gap: 12px; flex-wrap: wrap;
+    }
+    .modal-cta {
+      flex: 1;
+      min-width: 140px;
+      padding: 14px 20px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      transition: all 0.2s;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      text-align: center;
+    }
+    .modal-cta-primary {
+      background: linear-gradient(135deg, var(--purple) 0%, var(--purple-neon) 100%);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(139, 63, 191, 0.4);
+    }
+    .modal-cta-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 28px rgba(199, 125, 255, 0.6);
+    }
+    .modal-cta-secondary {
+      background: transparent;
+      border: 1px solid var(--border-hover);
+      color: var(--text);
+    }
+    .modal-cta-secondary:hover {
+      border-color: var(--purple-neon);
+      color: var(--purple-neon);
+    }
+    .modal-cta[disabled] {
+      background: var(--muted);
+      color: var(--subtle);
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       RESPONSIVE
+       ═══════════════════════════════════════════════════════════ */
+       @media (max-width: 900px) {
+        .nav-inner {
+        grid-template-columns: 48px 1fr 48px;
+        min-height: 70px;
+      }
+      .nav-left .nav-link { display: none; }
+      .nav-right { display: none; }
+      .logo { text-align: center; }
+      .hero { height: 580px; }
+      .hero-slide { padding: 0 16px; }
+      .hero-slide-content { grid-template-columns: 1fr; gap: 16px; text-align: center; }
+      .hero-image-wrap { order: -1; }
+      .hero-image { max-height: 280px; width: auto; }
+      .hero-image-wrap::before { width: 250px; height: 250px; }
+      .hero-arrow { width: 36px; height: 36px; }
+      .hero-dots { bottom: 16px; }
+      .hero-eyebrow { font-size: 11px; margin-bottom: 10px; }
+      .hero-title { font-size: 26px; }
+      .hero-subtitle { font-size: 15px; margin-bottom: 20px; }
+      .modal-body { grid-template-columns: 1fr; padding: 12px 14px; gap: 8px; }
+      .modal-image-wrap { max-height: 28vh; }
+      .modal-name { font-size: 20px; }
+      .modal-price { font-size: 24px; margin-bottom: 12px; }
+      .modal-grade-line { font-size: 12px; margin-bottom: 6px; }
+      .modal-details { font-size: 12px; gap: 4px 12px; margin-bottom: 12px; }
+      .modal-cta { padding: 12px 16px; font-size: 11px; }
+      .form-row { grid-template-columns: 1fr; }
+      section { padding: 60px 20px; }
+      .inventory-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .slab-card-name { font-size: 14px; }
+      .slab-card-price { font-size: 14px; }
+      .slab-card-set { font-size: 9px; }
+      .slab-card-info { padding: 12px 10px; gap: 4px; }
+      .top-bar-inner { justify-content: center; font-size: 11px; }
+      .top-bar { padding: 6px 16px; }
+      .top-bar-right { display: none; }
+      .review-card { min-width: 85vw; }
+      .review-arrow-left { left: 4px; }
+      .review-arrow-right { right: 4px; }
+      .filter-bar { flex-direction: column; gap: 10px; padding: 12px; }
+      .filter-select { width: 100%; }
+    }
+
+    @media (max-width: 500px) {
+      .top-bar { font-size: 11px; padding: 8px 16px; }
+      .top-bar-left { gap: 14px; }
+      .section-title { font-size: 22px; letter-spacing: 2px; }
+      .hero-title { font-size: 32px; }
+      .sell-form { padding: 24px; }  
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       NAV
+       ═══════════════════════════════════════════════════════════ -->
+  <nav>
+    <div class="nav-inner">
+      <div class="nav-left">
+        <span class="hamburger" onclick="openMenu()">☰</span>
+      </div>
+      <a href="#" onclick="event.preventDefault(); window.scrollTo({top:0, behavior:'smooth'});" class="logo">TCGGREEDO</a>
+      <div class="nav-right">
+        <a href="contact.html" class="nav-link" style="font-size:13px;">Contact Us</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       HERO CAROUSEL
+       ═══════════════════════════════════════════════════════════ -->
+  <div class="hero" id="hero">
+    <!-- slides injected by JS -->
+    <button class="hero-arrow left" onclick="prevSlide()">‹</button>
+    <button class="hero-arrow right" onclick="nextSlide()">›</button>
+    <div class="hero-dots" id="heroDots"></div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       INVENTORY (all slabs, filterable)
+       ═══════════════════════════════════════════════════════════ -->
+  <section id="inventory">
+    <h2 class="section-title">READY TO BUY</h2>
+    <p class="section-subtitle">Every slab authenticated, every cert verifiable</p>
+
+    <div class="filter-bar" id="filterBar">
+      <span class="filter-label">Filter:</span>
+      <select class="filter-select" id="filterSet"><option value="">All Sets</option></select>
+      <select class="filter-select" id="filterGrader"><option value="">All Graders</option></select>
+      <select class="filter-select" id="filterGrade"><option value="">All Grades</option></select>
+      <span class="filter-clear" onclick="clearFilters()">Clear</span>
+      <span style="width:1px; height:20px; background:var(--border); margin:0 4px;"></span>
+      <span class="filter-label">Sort:</span>
+      <select class="filter-select" id="sortBy">
+        <option value="price-desc">Price: High → Low</option>
+        <option value="price-asc">Price: Low → High</option>
+        <option value="grade-desc">Grade: High → Low</option>
+        <option value="grade-asc">Grade: Low → High</option>
+        <option value="name-asc">Name: A → Z</option>
+        <option value="name-desc">Name: Z → A</option>
+        <option value="newest">Newest First</option>
+      </select>
+    </div>
+
+    <div class="inventory-grid" id="inventoryGrid"></div>
+  </section>
+
+  <section id="reviews" style="text-align:center; padding:60px 24px;">
+    <h2 class="section-title">COLLECTOR REVIEWS</h2>
+    <p style="color:var(--subtle); font-family:var(--serif); font-style:italic; font-size:16px; margin-bottom:30px;">See what the community is saying about TCG Greedo.</p>
+    <a href="reviews.html" class="hero-cta" style="font-size:13px; padding:14px 32px;">READ REVIEWS →</a>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SELL YOUR SLABS
+       ═══════════════════════════════════════════════════════════ -->
+  <div class="sell-section" id="sell">
+    <div class="sell-inner">
+      <h2 class="section-title">SELL YOUR SLABS</h2>
+      <p class="section-subtitle">Got graded Pokémon? Let's talk.</p>
+
+      <div class="sell-steps">
+        <div class="sell-step">
+          <div class="sell-step-num">01</div>
+          <div class="sell-step-title">Submit</div>
+          <p class="sell-step-body">Send your slab details, cert numbers, and asking price using the form below.</p>
+        </div>
+        <div class="sell-step">
+          <div class="sell-step-num">02</div>
+          <div class="sell-step-title">Review</div>
+          <p class="sell-step-body">We'll review the cert, verify condition, and respond with an offer within 48 hours.</p>
+        </div>
+        <div class="sell-step">
+          <div class="sell-step-num">03</div>
+          <div class="sell-step-title">Ship & Get Paid</div>
+          <p class="sell-step-body">Ship insured. We authenticate on arrival and pay you within 1 business day.</p>
+        </div>
+      </div>
+
+      <!-- Netlify Form -->
+      <div style="text-align:center;">
+        <a href="contact.html" class="hero-cta" style="font-size:14px; padding:18px 40px;">✉ Send Us Your Slab Details</a>
+        <p style="color:var(--subtle); font-size:13px; margin-top:16px;">Include card names, cert numbers, and your asking price — we'll respond within 24 hours.</p>
+      </div>
+    </div>
+  </div>
+
+  
+  <section id="contact" class="contact-section">
+    <h2 class="contact-title">LET'S CONNECT</h2>
+    <p class="contact-sub">Slide into our DMs — the modern alternative of communication!</p>
+    <a href="https://ig.me/m/tcggreedo" target="_blank" rel="noopener" class="contact-cta">
+      <span>📸</span>
+      <span>DM @tcggreedo on Instagram</span>
+    </a>
+  </section>
+  <!-- ═══════════════════════════════════════════════════════════
+       FOOTER
+       ═══════════════════════════════════════════════════════════ -->
+  <footer>
+    <div class="footer-inner">
+      <span class="footer-brand">TCGGREEDO</span>
+      <div class="footer-links">
+        <a href="https://instagram.com/tcggreedo" target="_blank" rel="noopener">Instagram</a>
+        <a href="reviews.html">Reviews</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <span class="footer-copy">&copy; 2026 TCG Greedo. All rights reserved.</span>
+    </div>
+  </footer>
+
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       HAMBURGER MENU (slide-out)
+       ═══════════════════════════════════════════════════════════ -->
+       <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
+       <div class="menu-panel" id="menuPanel">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+           <span style="font-family:var(--display); font-size:16px; letter-spacing:2px; color:var(--purple-neon);">FILTERS</span>
+           <button onclick="closeMenu()" style="background:none; border:none; color:var(--text); font-size:24px; cursor:pointer;">×</button>
+         </div>
+         <div class="menu-filter-group">
+           <label class="menu-filter-label">Set</label>
+           <select class="menu-filter-select" id="menuFilterSet"><option value="">All Sets</option></select>
+         </div>
+         <div class="menu-filter-group">
+           <label class="menu-filter-label">Grader</label>
+           <select class="menu-filter-select" id="menuFilterGrader"><option value="">All Graders</option></select>
+         </div>
+         <div class="menu-filter-group">
+           <label class="menu-filter-label">Grade</label>
+           <select class="menu-filter-select" id="menuFilterGrade"><option value="">All Grades</option></select>
+         </div>
+         <div class="menu-filter-group">
+           <label class="menu-filter-label">Sort</label>
+           <select class="menu-filter-select" id="menuSortBy">
+             <option value="price-desc">Price: High → Low</option>
+             <option value="price-asc">Price: Low → High</option>
+             <option value="grade-desc">Grade: High → Low</option>
+             <option value="grade-asc">Grade: Low → High</option>
+             <option value="name-asc">Name: A → Z</option>
+             <option value="name-desc">Name: Z → A</option>
+             <option value="newest">Newest First</option>
+           </select>
+         </div>
+         <button onclick="applyMenuFilters()" style="width:100%; padding:12px; background:linear-gradient(135deg, var(--purple) 0%, var(--purple-neon) 100%); color:#fff; font-family:var(--display); font-size:11px; letter-spacing:2px; border:none; border-radius:6px; cursor:pointer; margin-top:12px;">APPLY FILTERS</button>
+         <button onclick="clearMenuFilters()" style="width:100%; padding:10px; background:transparent; color:var(--subtle); font-size:11px; letter-spacing:1.5px; border:1px solid var(--border); border-radius:6px; cursor:pointer; margin-top:8px;">CLEAR ALL</button>
+         <div style="margin-top:16px; padding-top:12px; border-top:1px solid var(--border);">
+          <div class="menu-nav-link" onclick="closeMenu(); scrollToSection('inventory')">Ready To Buy</div>
+          <a class="menu-nav-link" href="reviews.html" style="display:block; text-decoration:none; color:inherit;">Reviews</a>
+          <div class="menu-nav-link" onclick="closeMenu(); scrollToSection('sell')">Sell Your Slabs</div>
+          <a class="menu-nav-link" href="contact.html" style="display:block; text-decoration:none; color:inherit;">Contact Us</a>
+         </div>
+       </div>  
+  <!-- ═══════════════════════════════════════════════════════════
+       SLAB DETAIL MODAL
+       ═══════════════════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="slabModal" onclick="closeModal(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal()">×</button>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <script>
+  /* ═══════════════════════════════════════════════════════════════
+     TCG GREEDO — INVENTORY + SITE LOGIC
+     ═══════════════════════════════════════════════════════════════
+     HOW TO ADD A SLAB:
+       Copy one of the objects below, change the fields, save file,
+       push to Netlify. Site rebuilds in ~30 seconds.
+
+     HOW TO MARK A SLAB SOLD:
+       Change `sold: false` to `sold: true`.
+
+     HOW TO FEATURE A SLAB IN THE HERO:
+       Set `featured: true`. First 4 featured show in carousel.
+
+     IMAGE FILE NAMING:
+       Save scans as: images/{cert}-front.jpg
+     ═══════════════════════════════════════════════════════════════ */
+
+  const INVENTORY = [
+    // ── ORIGINAL 5 ──────────────────────────────────────────────
+    {
+      id: "158375823",
+      name: "Rocket's Snorlax ex",
+      set: "Team Rocket Returns",
+      year: 2004,
+      cardNumber: "104/109",
+      grader: "PSA",
+      grade: 9,
+      price: 0,
+      hiddenPrice: 13000,
+      sold: true,
+      featured: true,
+      dateAdded: "2026-09-25",
+      image: "158375823-front.jpg"
+    },
+    {
+      id: "49372132",
+      name: "Charizard G LV.X",
+      set: "D&P Black Star Promo",
+      year: 2009,
+      cardNumber: "DP45",
+      grader: "PSA",
+      grade: 9,
+      price: 0,
+      hiddenPrice: 8000,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-25",
+      image: "49372132-front.jpg"
+    },
+    {
+      id: "97589101",
+      name: "Gengar LV.X — Holo",
+      set: "Platinum Arceus",
+      year: 2009,
+      cardNumber: "97/99",
+      grader: "PSA",
+      grade: 9,
+      price: 0,
+      hiddenPrice: 25000,
+      sold: false,
+      featured: true,
+      dateAdded: "2026-09-25",
+      image: "97589101-front.jpg"
+    },
+    {
+      id: "64798233",
+      name: "Rocket's Zapdos — 1st Edition Holo",
+      set: "Gym Challenge",
+      year: 2000,
+      cardNumber: "15/132",
+      grader: "PSA",
+      grade: 10,
+      price: 0,
+      hiddenPrice: 35000,
+      sold: false,
+      featured: true,
+      dateAdded: "2026-09-25",
+      image: "64798233-front.jpg"
+    },
+    {
+      id: "60334721",
+      name: "Dialga LV.X",
+      set: "D&P Black Star Promo",
+      year: 2009,
+      cardNumber: "DP37",
+      grader: "PSA",
+      grade: 9,
+      hiddenPrice: 2000,
+      price: 0,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-25",
+      image: "60334721-front.jpg"
+    },
+
+    // ── BATCH 2 (20 slabs) ──────────────────────────────────────
+    {
+      id: "137000695",
+      name: "Pikachu — Holo (Japanese)",
+      set: "11th Movie Comm. Set",
+      year: 2008,
+      cardNumber: "003/009",
+      grader: "PSA",
+      grade: 6,
+      price: 0,
+      hiddenPrice: 1000,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-26",
+      image: "137000695-front.jpg"
+    },
+    {
+      id: "120030093",
+      name: "Sudowoodo — Illustration Rare",
+      set: "Paldea Evolved",
+      year: 2023,
+      cardNumber: "219/193",
+      grader: "PSA",
+      grade: 10,
+      price: 0,
+      hiddenPrice: 250,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-26",
+      image: "120030093-front.jpg"
+    },
+    {
+      id: "87809289",
+      name: "Ho-Oh",
+      set: "EX Unseen Forces",
+      year: 2005,
+      cardNumber: "27/115",
+      grader: "PSA",
+      grade: 10,
+      price: 0,
+      sold: false,
+      featured: true,
+      dateAdded: "2026-09-26",
+      image: "87809289-front.jpg"
+    },
+    {
+      id: "47601903",
+      name: "Squirtle — 1st Edition",
+      set: "Base Set",
+      year: 1999,
+      cardNumber: "63/102",
+      grader: "PSA", 
+      grade: 9,
+      price: 0,
+      hiddenPrice: 3200,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-26",
+      image: "47601903-front.jpg"
+    },
+    {
+      id: "113346532",
+      name: "Lugia — Rev. Foil",
+      set: "Call of Legends",
+      year: 2011,
+      cardNumber: "15/95",
+      grader: "PSA",
+      grade: 8,
+      price: 0,
+      hiddenPrice: 850,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-26",
+      image: "113346532-front.jpg"
+    },
+    {
+      id: "161389336",
+      name: "Mew Gold Star — World Champs Empotech",
+      set: "Promo",
+      year: 2008,
+      cardNumber: "101/101",
+      grader: "PSA",
+      grade: 1,
+      price: 0,
+      hiddenPrice: 1360,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-26",
+      image: "161389336-front.jpg"
+    },
+    {
+      id: "43587694",
+      name: "Swampert ex — Holo",
+      set: "EX Crystal Guardians",
+      year: 2006,
+      cardNumber: "98/100",
+      grader: "PSA",
+      grade: 9,
+      price: 0,
+      hiddenPrice: 2750,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-26",
+      image: "43587694-front.jpg"
+    },
+    {
+      id: "68046960",
+      name: "Lugia — Holo Cosmos",
+      set: "EX Unseen Forces",
+      year: 2005,
+      cardNumber: "29/115",
+      grader: "PSA",
+      grade: 10,
+      price: 0,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-26",
+      image: "68046960-front.jpg"
+    },
+    {
+      id: "158436873",
+      name: "Charizard G LV.X",
+      set: "D&P Black Star Promo",
+      year: 2009,
+      cardNumber: "DP45",
+      grader: "PSA",
+      grade: 7,
+      price: 0,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-26",
+      image: "158436873-front.jpg"
+    },
+    {
+      id: "0019258447",
+      name: "Nidoqueen — Reverse Holo",
+      set: "Legendary Collection",
+      year: 2002,
+      cardNumber: "32/110",
+      grader: "BECKETT",
+      grade: 9,
+      price: 0,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-26",
+      image: "0019258447-front.jpg"
+    },
+    {
+      id: "125601601",
+      name: "Umbreon ex — Special Illustration Rare",
+      set: "Prismatic Evolutions",
+      year: 2025,
+      cardNumber: "161/131",
+      grader: "PSA",
+      grade: 9,
+      price: 0,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-26",
+      image: "125601601-front.jpg"
+    },
+    {
+      id: "102666507",
+      name: "Steelix (Japanese)",
+      set: "Wind From The Sea",
+      year: 2002,
+      cardNumber: "072/087",
+      grader: "PSA",
+      grade: 10,
+      price: 0,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-26",
+      image: "102666507-front.jpg"
+    },
+    {
+      id: "100385726",
+      name: "Ampharos ex — Holo",
+      set: "EX Dragon",
+      year: 2003,
+      cardNumber: "89/97",
+      grader: "PSA",
+      grade: 9,
+      price: 0,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-26",
+      image: "100385726-front.jpg"
+    },
+    {
+      id: "161613704",
+      name: "Mewtwo LV.X — Holo (Japanese)",
+      set: "Mewtwo LV.X Coll. Pack",
+      year: 2009,
+      cardNumber: "006/012",
+      grader: "PSA",
+      grade: 10,
+      price: 0,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-26",
+      image: "161613704-front.jpg"
+    },
+    {
+      id: "98365006",
+      name: "Sceptile ex — Holo",
+      set: "EX Magma vs Aqua",
+      year: 2004,
+      cardNumber: "93/95",
+      grader: "PSA",
+      grade: 9,
+      price: 0,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-26",
+      image: "98365006-front.jpg"
+    },
+    {
+      id: "165573651",
+      name: "Umbreon — Holo",
+      set: "Undaunted",
+      year: 2010,
+      cardNumber: "10/90",
+      grader: "PSA",
+      grade: 9,
+      price: 0,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-26",
+      image: "92139716-front.jpg"
+    },
+    {
+      id: "28658273",
+      name: "Magmortar LV.X — Holo",
+      set: "D&P Mysterious Treasures",
+      year: 2007,
+      cardNumber: "123/123",
+      grader: "PSA",
+      grade: 9,
+      price: 0,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-26",
+      image: "28658273-front.jpg"
+    },
+    {
+      id: "68682787",
+      name: "Glaceon LV.X — Holo (Japanese)",
+      set: "Dawn Dash",
+      year: 2007,
+      cardNumber: "DP(a)",
+      grader: "PSA",
+      grade: 10,
+      price: 0,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-26",
+      image: "68682787-front.jpg"
+    },
+    {
+      id: "28996050",
+      name: "Kabutops Reverse Holo",
+      set: "Skyridge",
+      year: 2003,
+      cardNumber: "14/144",
+      grader: "PSA",
+      grade: 10,
+      price: 0,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-26",
+      image: "72878052-front.jpg"
+    },
+    {
+      id: "41938720",
+      name: "Pikachu — 1st Ed. W Stamp Promo",
+      set: "Jungle",
+      year: 1999,
+      cardNumber: "60/64",
+      grader: "PSA",
+      grade: 10,
+      price: 0,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-26",
+      image: "41938720-front.jpg"
+    },
+
+    // ── BATCH 3 (3 slabs) ───────────────────────────────────────
+    {
+      id: "100485686",
+      name: "Lucario LV.X — Holo",
+      set: "D&P Mysterious Treasures",
+      year: 2007,
+      cardNumber: "122/123",
+      grader: "PSA",
+      grade: 9,
+      price: 0,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-26",
+      image: "100485686-front.jpg"
+    },
+    {
+      id: "28664897",
+      name: "Palkia LV.X — Holo",
+      set: "D&P Great Encounters",
+      year: 2008,
+      cardNumber: "106/106",
+      grader: "PSA",
+      grade: 9,
+      price: 0,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-26",
+      image: "28664897-front.jpg"
+    },
+    {
+      id: "28384874",
+      name: "Dialga LV.X — Holo",
+      set: "D&P Great Encounters",
+      year: 2008,
+      cardNumber: "105/106",
+      grader: "PSA",
+      grade: 9,
+      price: 0,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-26",
+      image: "28384874-front.jpg"
+    },
+        // ── BATCH 4 — Call of Legends SL set (11 slabs) ─────────────
+        {
+      id: "40897722",
+      name: "Ho-Oh — Holo",
+      set: "Call of Legends",
+      year: 2011,
+      cardNumber: "SL5",
+      grader: "PSA",
+      grade: 9,
+      price: 0,
+      hiddenPrice: 1500,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-27",
+      image: "40897722-front.jpg"
+    },
+    {
+      id: "75520244",
+      name: "Deoxys — Holo",
+      set: "Call of Legends",
+      year: 2011,
+      cardNumber: "SL1",
+      grader: "PSA",
+      grade: 9,
+      price: 0,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-27",
+      image: "75520244-front.jpg"
+    },
+    {
+      id: "52700342",
+      name: "Lugia — Holo",
+      set: "Call of Legends",
+      year: 2011,
+      cardNumber: "SL7",
+      grader: "PSA",
+      grade: 9,
+      price: 0,
+      hiddenPrice: 100_000,
+      quantity: 2,
+      sold: 1,
+      featured: false,
+      dateAdded: "2026-09-27",
+      image: "52700342-front.jpg"
+    },
+    {
+      id: "63203871",
+      name: "Rayquaza — Holo",
+      set: "Call of Legends",
+      year: 2011,
+      cardNumber: "SL10",
+      grader: "PSA",
+      grade: 9,
+      price: 0,
+      hiddenPrice: 52_000,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-27",
+      image: "63203871-front.jpg"
+    },
+    {
+      id: "164231581",
+      name: "Kyogre — Holo",
+      set: "Call of Legends",
+      year: 2011,
+      cardNumber: "SL6",
+      grader: "PSA",
+      grade: 9,
+      price: 0,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-27",
+      image: "164231581-front.jpg"
+    },
+    {
+      id: "28384751",
+      name: "Dialga — Holo",
+      set: "Call of Legends",
+      year: 2011,
+      cardNumber: "SL2",
+      grader: "PSA",
+      grade: 9,
+      price: 0,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-27",
+      image: "28384751-front.jpg"
+    },
+    {
+      id: "27430126",
+      name: "Groudon — Holo",
+      set: "Call of Legends",
+      year: 2011,
+      cardNumber: "SL4",
+      grader: "PSA",
+      grade: 9,
+      price: 0,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-27",
+      image: "27430126-front.jpg"
+    },
+    {
+      id: "40770573",
+      name: "Raikou — Holo",
+      set: "Call of Legends",
+      year: 2011,
+      cardNumber: "SL9",
+      grader: "PSA",
+      grade: 9,
+      price: 0,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-27",
+      image: "40770573-front.jpg"
+    },
+    {
+      id: "40770468",
+      name: "Entei — Holo",
+      set: "Call of Legends",
+      year: 2011,
+      cardNumber: "SL3",
+      grader: "PSA",
+      grade: 9,
+      price: 0,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-27",
+      image: "40770468-front.jpg"
+    },
+    {
+      id: "52780370",
+      name: "Suicune — Holo",
+      set: "Call of Legends",
+      year: 2011,
+      cardNumber: "SL11",
+      grader: "PSA",
+      grade: 9,
+      price: 0,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-27",
+      image: "52780370-front.jpg"
+    },
+    {
+      id: "28854108",
+      name: "Palkia — Holo",
+      set: "Call of Legends",
+      year: 2011,
+      cardNumber: "SL8",
+      grader: "PSA",
+      grade: 9,
+      price: 0,
+      sold: false,
+      featured: false,
+      dateAdded: "2026-09-27",
+      image: "28854108-front.jpg"
+    },
+    // Add more slab objects above, comma-separated
+  ];
+
+  /* ═══════════════════════════════════════════════════════════════
+     SITE LOGIC — everything below auto-renders from INVENTORY
+     ═══════════════════════════════════════════════════════════════ */
+
+  // ── STATE ─────────────────────────────────────────────────────
+  let currentSlide = 0;
+  let slideTimer = null;
+  let filters = { set: '', grader: '', grade: '', sortBy: 'price-desc' };
+
+  // ── HELPERS ───────────────────────────────────────────────────
+  const $ = (sel) => document.querySelector(sel);
+  const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+
+
+  // ── QUANTITY HELPERS ──────────────────────────────────────────
+  function getAvailable(slab) {
+    const qty = slab.quantity || 1;
+    if (slab.sold === true) return 0;
+    if (slab.sold === false || slab.sold === undefined) return qty;
+    return Math.max(0, qty - (slab.sold || 0));
+  }
+  function isSoldOut(slab) { return getAvailable(slab) === 0; }  
+  function formatPrice(n) {
+    if (!n || n === 0) return 'Offer';
+    return '$' + Number(n).toLocaleString('en-US');
+  }
+
+  function slabImage(slab) {
+    // Fallback if image missing: purple gradient placeholder
+    return `images/${slab.image}`;
+  }
+
+  function certUrl(certNumber, grader) {
+    switch ((grader || 'PSA').toUpperCase()) {
+      case 'CGC':  return `https://www.cgccards.com/certlookup/${certNumber}/`;
+      case 'BGS':
+      case 'BVG':  return `https://www.beckett.com/grading/card-lookup?cert_no=${certNumber}`;
+      case 'TAG':  return `https://www.taggrading.com/cert/${certNumber}`;
+      case 'ACE':  return `https://www.acegrading.com/cert/${certNumber}`;
+      case 'PSA':
+      default:     return `https://www.psacard.com/cert/${certNumber}`;
+    }
+  }
+
+  function scrollToSection(id) {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ── FEATURED SELECTION (for hero carousel) ────────────────────
+  function getFeaturedSlabs() {
+    // Top 4 most expensive unsold slabs; if none priced, pick 4 random
+    const priced = INVENTORY
+      .filter(s => !s.sold && (s.price > 0 || s.hiddenPrice > 0))
+      .sort((a, b) => (b.hiddenPrice || b.price) - (a.hiddenPrice || a.price))
+      .slice(0, 4);
+    if (priced.length >= 4) return priced;
+    const unsold = INVENTORY.filter(s => !s.sold);
+    const shuffled = unsold.sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, 4);
+  }
+
+  // ── HERO CAROUSEL ─────────────────────────────────────────────
+  function renderHero() {
+    const hero = $('#hero');
+    const dots = $('#heroDots');
+    const slabs = getFeaturedSlabs();
+
+    // Remove any existing slides
+    $$('.hero-slide').forEach(s => s.remove());
+    dots.innerHTML = '';
+
+    if (slabs.length === 0) {
+      const slide = document.createElement('div');
+      slide.className = 'hero-slide active';
+      slide.innerHTML = `
+        <div class="hero-slide-content">
+          <div class="hero-text-block" style="text-align:center; grid-column:1/-1;">
+            <p class="hero-eyebrow">TCG GREEDO</p>
+            <h1 class="hero-title">The Vault Awaits</h1>
+            <p class="hero-subtitle">Inventory coming soon.</p>
+            <a href="https://instagram.com/tcggreedo" target="_blank" rel="noopener" class="hero-cta">Follow on Instagram →</a>
+          </div>
+        </div>`;
+      hero.insertBefore(slide, hero.querySelector('.hero-arrow.left'));
+      return;
+    }
+
+    const leftArrow = hero.querySelector('.hero-arrow.left');
+    slabs.forEach((slab, i) => {
+      const slide = document.createElement('div');
+      slide.className = 'hero-slide' + (i === 0 ? ' active' : '');
+      slide.innerHTML = `
+        <div class="hero-slide-content">
+          <div class="hero-text-block">
+            <p class="hero-eyebrow">${slab.grader} ${slab.grade} · FEATURED</p>
+            <h1 class="hero-title">${slab.name}</h1>
+            <p class="hero-subtitle">${slab.set} · ${slab.year}</p>
+            <button class="hero-cta" onclick="openModal('${slab.id}')">View Slab →</button>
+          </div>
+          <div class="hero-image-wrap" onclick="openModal('${slab.id}')" style="cursor:pointer;">
+            <img class="hero-image" src="${slabImage(slab)}" alt="${slab.name}" onerror="this.style.display='none'">
+          </div>
+        </div>`;
+      hero.insertBefore(slide, leftArrow);
+
+      const dot = document.createElement('div');
+      dot.className = 'hero-dot' + (i === 0 ? ' active' : '');
+      dot.onclick = () => goToSlide(i);
+      dots.appendChild(dot);
+    });
+
+    startSlideTimer();
+  }
+
+  function goToSlide(idx) {
+    const slides = $$('.hero-slide');
+    const dots = $$('.hero-dot');
+    if (slides.length === 0) return;
+    slides[currentSlide].classList.remove('active');
+    dots[currentSlide]?.classList.remove('active');
+    currentSlide = (idx + slides.length) % slides.length;
+    slides[currentSlide].classList.add('active');
+    dots[currentSlide]?.classList.add('active');
+    startSlideTimer();
+  }
+
+  function nextSlide() { goToSlide(currentSlide + 1); }
+  function prevSlide() { goToSlide(currentSlide - 1); }
+
+  function startSlideTimer() {
+    clearTimeout(slideTimer);
+    slideTimer = setTimeout(nextSlide, 6000);
+  }
+
+  // ── SHOP BY SET (auto-generated tiles) ────────────────────────
+  function renderSets() {
+    const grid = $('#setGrid');
+    const setCounts = {};
+    INVENTORY.filter(s => !isSoldOut(s) || (isSoldOut(s) && s.soldDate && ((new Date() - new Date(s.soldDate)) / 86400000) <= 7)).forEach(s => {
+      setCounts[s.set] = (setCounts[s.set] || 0) + 1;
+    });
+    // Sort by count desc, then alphabetically
+    const sets = Object.keys(setCounts).sort((a, b) => {
+      const diff = setCounts[b] - setCounts[a];
+      return diff !== 0 ? diff : a.localeCompare(b);
+    });
+
+    const SET_LIMIT = 5;
+    let expanded = false;
+
+    grid.innerHTML = '';
+    if (sets.length === 0) {
+      grid.innerHTML = '<div class="empty-state"><div class="empty-state-title">No sets yet</div><p>Sets appear here as inventory is added.</p></div>';
+      return;
+    }
+
+    function buildSetTiles() {
+      grid.innerHTML = '';
+      const visible = expanded ? sets : sets.slice(0, SET_LIMIT);
+      visible.forEach(set => {
+        const tile = document.createElement('div');
+        tile.className = 'set-tile' + (filters.set === set ? ' active' : '');
+        tile.onclick = () => { filters.set = (filters.set === set ? '' : set); applyFilters(); renderSets(); scrollToSection('inventory'); };
+        tile.innerHTML = `
+          <div class="set-tile-name">${set}</div>
+          <div class="set-tile-count">${setCounts[set]} slab${setCounts[set] === 1 ? '' : 's'}</div>`;
+        grid.appendChild(tile);
+      });
+
+      if (sets.length > SET_LIMIT) {
+        const toggle = document.createElement('div');
+        toggle.className = 'set-tile';
+        toggle.style.cursor = 'pointer';
+        toggle.style.display = 'flex';
+        toggle.style.alignItems = 'center';
+        toggle.style.justifyContent = 'center';
+        toggle.onclick = () => { expanded = !expanded; buildSetTiles(); };
+        toggle.innerHTML = `
+          <div class="set-tile-name" style="font-size:28px; color:var(--purple-neon);">${expanded ? '−' : '+'}</div>
+          <div class="set-tile-count">${expanded ? 'Show Less' : (sets.length - SET_LIMIT) + ' More Sets'}</div>`;
+        grid.appendChild(toggle);
+      }
+    }
+    buildSetTiles();
+  }
+
+  // ── SHOP BY GRADE (auto-generated pills) ──────────────────────
+  function renderGrades() {
+    const row = $('#gradeRow');
+    // Group by grader+grade combo, e.g. "PSA 10", "CGC 9.5"
+    const gradeCounts = {};
+    INVENTORY.filter(s => !s.sold).forEach(s => {
+      const key = `${s.grader} ${s.grade}`;
+      gradeCounts[key] = (gradeCounts[key] || 0) + 1;
+    });
+    // Sort by grader then grade desc
+    const grades = Object.keys(gradeCounts).sort((a, b) => {
+      const [gA, nA] = a.split(' ');
+      const [gB, nB] = b.split(' ');
+      if (gA !== gB) return gA.localeCompare(gB);
+      return parseFloat(nB) - parseFloat(nA);
+    });
+
+    row.innerHTML = '';
+    if (grades.length === 0) {
+      row.innerHTML = '<div class="empty-state" style="width:100%"><div class="empty-state-title">No grades yet</div><p>Grade categories appear here as inventory is added.</p></div>';
+      return;
+    }
+    grades.forEach(g => {
+      const [grader, grade] = g.split(' ');
+      const pill = document.createElement('div');
+      pill.className = 'grade-pill' + (filters.grader === grader && String(filters.grade) === String(grade) ? ' active' : '');
+      pill.onclick = () => { if (filters.grader === grader && String(filters.grade) === String(grade)) { filters.grader = ''; filters.grade = ''; } else { filters.grader = grader; filters.grade = grade; } applyFilters(); renderGrades(); scrollToSection('inventory'); };
+      pill.innerHTML = `
+        <div class="grade-pill-num">${grader} ${grade}</div>
+        <div class="grade-pill-label">Qty ${gradeCounts[g]}</div>`;
+      row.appendChild(pill);
+    });
+  }
+
+  // ── FILTER DROPDOWN POPULATION ────────────────────────────────
+  function populateFilters() {
+    const sets = [...new Set(INVENTORY.map(s => s.set))].sort();
+    const graders = [...new Set(INVENTORY.map(s => s.grader))].sort();
+    const grades = [...new Set(INVENTORY.map(s => s.grade))].sort((a, b) => b - a);
+
+    const setSel = $('#filterSet');
+    const graderSel = $('#filterGrader');
+    const gradeSel = $('#filterGrade');
+
+    setSel.innerHTML = '<option value="">All Sets</option>' +
+      sets.map(s => `<option value="${s}">${s}</option>`).join('');
+    graderSel.innerHTML = '<option value="">All Graders</option>' +
+      graders.map(g => `<option value="${g}">${g}</option>`).join('');
+    gradeSel.innerHTML = '<option value="">All Grades</option>' +
+      grades.map(g => `<option value="${g}">Grade ${g}</option>`).join('');
+
+    setSel.onchange = (e) => { filters.set = e.target.value; applyFilters(); };
+    graderSel.onchange = (e) => { filters.grader = e.target.value; applyFilters(); };
+    gradeSel.onchange = (e) => { filters.grade = e.target.value; applyFilters(); };
+
+    const sortSel = $('#sortBy');
+    sortSel.onchange = (e) => { filters.sortBy = e.target.value; applyFilters(); };
+  }
+
+  function applyFilters() {
+    $('#filterSet').value = filters.set;
+    $('#filterGrader').value = filters.grader;
+    $('#filterGrade').value = filters.grade;
+    $('#sortBy').value = filters.sortBy;
+    renderInventory();
+  }
+
+  function clearFilters() {
+    filters = { set: '', grader: '', grade: '', sortBy: 'price-desc' };
+    applyFilters();
+  }
+
+  // ── INVENTORY GRID ────────────────────────────────────────────
+  function renderInventory() {
+    const grid = $('#inventoryGrid');
+    let items = INVENTORY.slice();
+
+    // Filter
+    if (filters.set) items = items.filter(s => s.set === filters.set);
+    if (filters.grader) items = items.filter(s => s.grader === filters.grader);
+    if (filters.grade) items = items.filter(s => String(s.grade) === String(filters.grade));
+
+    // Always push sold to the bottom, then apply chosen sort
+    items.sort((a, b) => {
+      if (isSoldOut(a) !== isSoldOut(b)) return isSoldOut(a) ? 1 : -1;
+      switch (filters.sortBy) {
+        case 'price-desc':  return (b.hiddenPrice || b.price) - (a.hiddenPrice || a.price);
+        case 'price-asc':   return (a.hiddenPrice || a.price) - (b.hiddenPrice || b.price);
+        case 'grade-desc':  return b.grade - a.grade || a.name.localeCompare(b.name);
+        case 'grade-asc':   return a.grade - b.grade || a.name.localeCompare(b.name);
+        case 'name-asc':    return a.name.localeCompare(b.name);
+        case 'name-desc':   return b.name.localeCompare(a.name);
+        case 'newest':      return (b.dateAdded || '').localeCompare(a.dateAdded || '');
+        default:            return b.price - a.price;
+      }
+    });
+
+    grid.innerHTML = '';
+
+    if (items.length === 0) {
+      grid.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-title">No slabs match those filters</div>
+          <p style="margin-top:8px;">Try clearing filters or check back soon.</p>
+        </div>`;
+      return;
+    }
+
+    items.forEach(slab => {
+      const card = document.createElement('div');
+      card.className = 'slab-card' + (isSoldOut(slab) ? ' sold' : '');
+      card.onclick = () => openModal(slab.id);
+      card.innerHTML = `
+        <div class="slab-card-image-wrap">
+          <img class="slab-card-image" src="${slabImage(slab)}" alt="${slab.name}" onerror="this.style.display='none'; this.parentNode.style.background='linear-gradient(135deg, var(--purple-deep) 0%, var(--bg) 100%)';">
+          <div class="slab-card-grade-badge">${slab.grader} ${slab.grade}</div>
+          ${(slab.quantity || 1) > 1 ? '<div style="position:absolute;top:12px;left:12px;background:rgba(0,0,0,0.85);border:1px solid var(--purple-neon);color:var(--purple-neon);font-family:var(--display);font-size:10px;padding:5px 9px;border-radius:4px;letter-spacing:1px;z-index:6;line-height:1.4;">' + getAvailable(slab) + ' Available' + (slab.sold > 0 ? ' · ' + slab.sold + ' Sold' : '') + '</div>' : ''}
+          ${isSoldOut(slab) ? '<div class="sold-overlay"><div class="sold-stamp">SOLD OUT</div></div>' : ''}
+          ${getAvailable(slab) > 1 ? '<div style="position:absolute;top:12px;left:12px;background:rgba(0,0,0,0.85);border:1px solid var(--purple-neon);color:var(--purple-neon);font-family:var(--display);font-size:11px;padding:5px 9px;border-radius:4px;letter-spacing:1px;z-index:6;">QTY ' + getAvailable(slab) + '</div>' : ''}
+        </div>
+        <div class="slab-card-info">
+          <div class="slab-card-set">${slab.set} · ${slab.year}</div>
+          <div class="slab-card-name">${slab.name}</div>
+          <div class="slab-card-price">${formatPrice(slab.price)}</div>
+        </div>`;
+      grid.appendChild(card);
+    });
+  }
+
+  // ── MODAL ─────────────────────────────────────────────────────
+  function openModal(id) {
+    const slab = INVENTORY.find(s => s.id === id);
+    if (!slab) return;
+
+    const body = $('#modalBody');
+    const igMessage = encodeURIComponent(
+      `Hi! I'm interested in the ${slab.name} (${slab.grader} ${slab.grade}, cert ${slab.id}) listed at ${formatPrice(slab.price)}.`
+    );
+    const inquiryText = encodeURIComponent(
+      `Interested in: ${slab.name} — ${slab.grader} ${slab.grade} — Cert ${slab.id} — Listed ${formatPrice(slab.price)}`
+    );
+
+    body.innerHTML = `
+      <div class="modal-image-wrap">
+        <img class="modal-image" src="${slabImage(slab)}" alt="${slab.name}" onerror="this.style.display='none'; this.parentNode.style.background='linear-gradient(135deg, var(--purple-deep) 0%, var(--bg) 100%)';">
+        ${isSoldOut(slab) ? '<div class="sold-overlay"><div class="sold-stamp">SOLD OUT</div></div>' : ''}
+      </div>
+      <div class="modal-info">
+        <div>
+          ${isSoldOut(slab) ? '<div class="modal-sold-tag">SOLD OUT</div>' : ''}
+          ${(slab.quantity || 1) > 1 && !isSoldOut(slab) ? '<div style="display:inline-block;background:var(--purple-dim);color:var(--purple-neon);font-family:var(--display);font-size:11px;padding:5px 12px;border-radius:4px;letter-spacing:1.5px;margin-bottom:8px;">' + getAvailable(slab) + ' Available · ' + (slab.sold || 0) + ' Sold</div>' : ''}
+          ${getAvailable(slab) > 1 ? '<div style="display:inline-block;background:var(--purple-dim);color:var(--purple-neon);font-family:var(--display);font-size:11px;padding:5px 12px;border-radius:4px;letter-spacing:2px;margin-bottom:8px;">QTY ' + getAvailable(slab) + ' AVAILABLE</div>' : ''}
+          <div class="modal-grade-line">${slab.grader} ${slab.grade} · ${slab.set === 'Team Rocket Returns-Holo' || slab.name.toLowerCase().includes('holo') ? 'HOLO' : slab.set.toUpperCase()}</div>
+          <h2 class="modal-name">${slab.name}</h2>
+          <dl class="modal-details">
+            <dt>Set</dt><dd>${slab.set}</dd>
+            <dt>Year</dt><dd>${slab.year}</dd>
+            <dt>Card #</dt><dd>${slab.cardNumber}</dd>
+            <dt>Grade</dt><dd>${slab.grader} ${slab.grade}</dd>
+            <dt>Cert #</dt><dd><a href="${certUrl(slab.id, slab.grader)}" target="_blank" rel="noopener">${slab.id} ↗</a></dd>
+          </dl>
+          <p style="font-size:10px; color:var(--muted); margin-top:4px; margin-bottom:20px; letter-spacing:0.5px;">Cert shown is a sample for display — actual cert provided upon inquiry.</p>
+          <dl class="modal-details" style="display:none;">
+          </dl>
+          <div class="modal-price ${isSoldOut(slab) ? 'sold' : ''}">${formatPrice(slab.price)}</div>
+        </div>
+        <div class="modal-cta-row">
+          ${isSoldOut(slab) ? `
+            <button class="modal-cta modal-cta-primary" disabled>Sold Out</button>
+            <a href="https://instagram.com/tcggreedo" target="_blank" rel="noopener" class="modal-cta modal-cta-secondary">See More on IG →</a>
+          ` : `
+            <a href="https://ig.me/m/tcggreedo" target="_blank" rel="noopener" class="modal-cta modal-cta-primary">📸 DM on Instagram</a>
+            <a href="contact.html" class="modal-cta modal-cta-secondary">Send Inquiry</a>
+          `}
+        </div>
+      </div>`;
+
+    $('#slabModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal(e) {
+    if (e && e.target !== e.currentTarget) return;
+    $('#slabModal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function prefillInquiry(id) {
+    const slab = INVENTORY.find(s => s.id === id);
+    if (!slab) return;
+    const details = $('#sellDetails');
+    if (details) {
+      details.value = `INQUIRY — interested in purchasing:\n${slab.name} — ${slab.grader} ${slab.grade} — Cert ${slab.id} — Listed ${formatPrice(slab.price)}\n\n(add anything else here)`;
+      setTimeout(() => details.focus(), 400);
+    }
+  }
+
+  // ── REVIEW CAROUSEL ───────────────────────────────────────────
+  function scrollReviews(dir) {
+    const track = $('#reviewsTrack');
+    const card = track.querySelector('.review-card');
+    if (!card) return;
+    const scrollAmt = (card.offsetWidth + 24) * 3;
+    if (dir === 1 && track.scrollLeft + track.offsetWidth >= track.scrollWidth - 10) {
+      track.scrollTo({ left: 0, behavior: 'smooth' });
+    } else if (dir === -1 && track.scrollLeft <= 10) {
+      track.scrollTo({ left: track.scrollWidth, behavior: 'smooth' });
+    } else {
+      track.scrollBy({ left: dir * scrollAmt, behavior: 'smooth' });
+    }
+  }
+
+
+  // ── HAMBURGER MENU ────────────────────────────────────────────
+  function openMenu() {
+    populateMenuFilters();
+    $('#menuOverlay').classList.add('open');
+    $('#menuPanel').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMenu() {
+    $('#menuOverlay').classList.remove('open');
+    $('#menuPanel').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function populateMenuFilters() {
+    const sets = [...new Set(INVENTORY.map(s => s.set))].sort();
+    const graders = [...new Set(INVENTORY.map(s => s.grader))].sort();
+    const grades = [...new Set(INVENTORY.map(s => s.grade))].sort((a, b) => b - a);
+
+    $('#menuFilterSet').innerHTML = '<option value="">All Sets</option>' +
+      sets.map(s => `<option value="${s}" ${filters.set === s ? 'selected' : ''}>${s}</option>`).join('');
+    $('#menuFilterGrader').innerHTML = '<option value="">All Graders</option>' +
+      graders.map(g => `<option value="${g}" ${filters.grader === g ? 'selected' : ''}>${g}</option>`).join('');
+    $('#menuFilterGrade').innerHTML = '<option value="">All Grades</option>' +
+      grades.map(g => `<option value="${g}" ${String(filters.grade) === String(g) ? 'selected' : ''}>Grade ${g}</option>`).join('');
+    $('#menuSortBy').value = filters.sortBy;
+  }
+
+  function applyMenuFilters() {
+    filters.set = $('#menuFilterSet').value;
+    filters.grader = $('#menuFilterGrader').value;
+    filters.grade = $('#menuFilterGrade').value;
+    filters.sortBy = $('#menuSortBy').value;
+    applyFilters();
+    closeMenu();
+    scrollToSection('inventory');
+  }
+
+  function clearMenuFilters() {
+    filters = { set: '', grader: '', grade: '', sortBy: 'price-desc' };
+    populateMenuFilters();
+    applyFilters();
+  }  
+  // ── KEYBOARD SHORTCUTS ────────────────────────────────────────
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { closeModal(); closeMenu(); }
+    if ($('#slabModal').classList.contains('open')) return;
+    if (e.key === 'ArrowLeft') prevSlide();
+    if (e.key === 'ArrowRight') nextSlide();
+  });
+
+  // ── INIT ──────────────────────────────────────────────────────
+  // Prevent anchor links from adding hash to URL (which causes scroll-jump on refresh)
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('a[href^="#"]');
+    if (link) {
+      e.preventDefault();
+      const id = link.getAttribute('href').slice(1);
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    renderHero();
+    populateFilters();
+    renderInventory();
+
+  // Save scroll position before leaving
+  window.addEventListener('beforeunload', () => {
+    sessionStorage.setItem('scrollPos', window.scrollY);
+  });
+  });
+  </script>
+
+</body>
+</html>
