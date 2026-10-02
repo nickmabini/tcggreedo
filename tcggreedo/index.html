@@ -1388,7 +1388,7 @@
 
   async function fetchInventory() {
     try {
-      const res = await fetch('inventory.json?' + Date.now());
+      const res = await fetch('https://raw.githubusercontent.com/nickmabini/tcggreedo/main/tcggreedo/inventory.json?' + Date.now());
       INVENTORY = await res.json();
     } catch (e) {
       console.error('Failed to load inventory:', e);
