@@ -122,10 +122,11 @@
     "price": 0,
     "hiddenPrice": 0,
     "quantity": 1,
-    "sold": 0,
+    "sold": 1,
     "archived": false,
     "dateAdded": "2026-09-26",
-    "image": "87809289-front.jpg"
+    "image": "87809289-front.jpg",
+    "soldDate": "2026-10-02"
   },
   {
     "id": "47601903",
