@@ -624,5 +624,21 @@
     "archived": false,
     "dateAdded": "2026-09-27",
     "image": "28854108-front.jpg"
+  },
+  {
+    "id": "0019258447",
+    "name": "Nidoqueen",
+    "set": "Legendary Collection",
+    "year": 2002,
+    "cardNumber": "32/110",
+    "grader": "BGS",
+    "grade": 9,
+    "price": 0,
+    "hiddenPrice": 0,
+    "quantity": 1,
+    "sold": 0,
+    "archived": false,
+    "dateAdded": "2026-10-02",
+    "image": "0019258447-front.jpg"
   }
 ]
