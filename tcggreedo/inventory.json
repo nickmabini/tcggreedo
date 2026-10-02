@@ -56,7 +56,7 @@
     "grader": "PSA",
     "grade": 10,
     "price": 0,
-    "hiddenPrice": 0,
+    "hiddenPrice": 35000,
     "quantity": 1,
     "sold": 0,
     "archived": false,
