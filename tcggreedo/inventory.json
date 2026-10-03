@@ -60,7 +60,7 @@
     "hiddenPrice": 35000,
     "quantity": 1,
     "sold": 0,
-    "archived": true,
+    "archived": false,
     "dateAdded": "2026-09-25",
     "image": "64798233-front.jpg"
   },
