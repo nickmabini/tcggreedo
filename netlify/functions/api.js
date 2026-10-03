@@ -222,7 +222,7 @@ async function saveInventory({ inventory, sha }) {
 // Uploads a slab image to GitHub repo /images/ folder
 // ═══════════════════════════════════════════════════════════════
 async function uploadImage({ imageBase64, filename }) {
-  const path = `images/${filename}`;
+  const path = `tcggreedo/images/${filename}`;
 
   // Check if file already exists (get sha for update)
   let existingSha = null;
