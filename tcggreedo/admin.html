@@ -1230,7 +1230,16 @@
         // ── CARD ART ───────────────────────────────
         ctx.drawImage(img, padding, labelH + padding * 2, img.width, img.height);
 
-        resolve(canvas.toDataURL('image/jpeg', 0.92));
+        // Resize to max 800px wide to keep file size under 500KB
+        let finalCanvas = canvas;
+        if (canvas.width > 800) {
+          const scale = 800 / canvas.width;
+          finalCanvas = document.createElement('canvas');
+          finalCanvas.width = 800;
+          finalCanvas.height = Math.round(canvas.height * scale);
+          finalCanvas.getContext('2d').drawImage(canvas, 0, 0, finalCanvas.width, finalCanvas.height);
+        }
+        resolve(finalCanvas.toDataURL('image/jpeg', 0.85));
       };
       img.onerror = () => resolve(cardDataUrl); // Fallback to raw art
       img.src = cardDataUrl;
@@ -1285,9 +1294,20 @@
     toast('Publishing...');
 
     try {
-      // Upload image — either PSA scan (if fetched) or user's photo
+      // Upload image — either card art composite or user's photo
       if (uploadedImageData) {
-        const imageBase64 = uploadedImageData.split(',')[1];
+        let imageBase64 = uploadedImageData.split(',')[1];
+        // Check size — if over 4MB base64 (~3MB file), compress further
+        if (imageBase64.length > 4000000) {
+          const img = new Image();
+          img.src = uploadedImageData;
+          await new Promise(r => img.onload = r);
+          const c = document.createElement('canvas');
+          c.width = Math.min(img.width, 600);
+          c.height = Math.round(img.height * (c.width / img.width));
+          c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+          imageBase64 = c.toDataURL('image/jpeg', 0.7).split(',')[1];
+        }
         await api('upload-image', { imageBase64, filename: slab.image });
       }
 
