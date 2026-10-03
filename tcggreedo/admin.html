@@ -1073,8 +1073,17 @@
         return;
       }
 
-      // Load the card image and composite with PSA label
-      const composited = await compositeSlabImage(imageUrl, cardInfo);
+      // Fetch image as blob to avoid CORS canvas tainting
+      const imgRes = await fetch(imageUrl);
+      const imgBlob = await imgRes.blob();
+      const imgDataUrl = await new Promise(resolve => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.readAsDataURL(imgBlob);
+      });
+
+      // Composite with PSA label
+      const composited = await compositeSlabImage(imgDataUrl, cardInfo);
       $('#previewImg').src = composited;
       uploadedImageData = composited;
       toast('Card image loaded with ' + cardInfo.grader + ' label');
