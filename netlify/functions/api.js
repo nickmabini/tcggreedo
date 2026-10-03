@@ -14,7 +14,7 @@
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const GITHUB_REPO = process.env.GITHUB_REPO || 'nickmabini/tcggreedo';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD
 
 // ── CORS headers ────────────────────────────────────────────────
 const headers = {
@@ -75,7 +75,7 @@ async function parseSlab({ imageBase64, mimeType }) {
       'anthropic-version': '2023-06-01'
     },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
+      model: 'claude-sonnet-4-20250514',
       max_tokens: 500,
       messages: [{
         role: 'user',
@@ -136,7 +136,7 @@ If you cannot read a field, use null for that field.`
 // ═══════════════════════════════════════════════════════════════
 async function getInventory() {
   const response = await fetch(
-    `https://api.github.com/repos/${GITHUB_REPO}/contents/tcggreedo/inventory.json`,
+    `https://api.github.com/repos/${GITHUB_REPO}/contents/inventory.json`,
     {
       headers: {
         'Authorization': `Bearer ${GITHUB_TOKEN}`,
@@ -188,7 +188,7 @@ async function saveInventory({ inventory, sha }) {
   if (sha) body.sha = sha;
 
   const response = await fetch(
-    `https://api.github.com/repos/${GITHUB_REPO}/contents/tcggreedo/inventory.json`,
+    `https://api.github.com/repos/${GITHUB_REPO}/contents/inventory.json`,
     {
       method: 'PUT',
       headers: {
@@ -280,7 +280,7 @@ async function fetchPsaScan({ cert, grader }) {
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({ imageUrl: null, message: 'Only PSA scan fetching is supported' })
+      body: JSON.stringify({ imageBase64: null, message: 'Only PSA scan fetching is supported' })
     };
   }
 
@@ -288,7 +288,7 @@ async function fetchPsaScan({ cert, grader }) {
     // Fetch the PSA cert page
     const response = await fetch(`https://www.psacard.com/cert/${cert}`, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36'
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
       }
     });
 
@@ -296,14 +296,13 @@ async function fetchPsaScan({ cert, grader }) {
       return {
         statusCode: 200,
         headers,
-        body: JSON.stringify({ imageUrl: null, message: 'Cert not found on PSA' })
+        body: JSON.stringify({ imageBase64: null, message: 'Cert not found on PSA' })
       };
     }
 
     const html = await response.text();
 
     // Look for the slab image URL in the page HTML
-    // PSA typically uses CloudFront URLs for cert images
     const patterns = [
       /https:\/\/[^"'\s]*d1htnxwo4o0jhw\.cloudfront\.net[^"'\s]*/gi,
       /https:\/\/[^"'\s]*\.psacard\.com\/[^"'\s]*cert[^"'\s]*\.(jpg|jpeg|png|webp)/gi,
@@ -315,31 +314,59 @@ async function fetchPsaScan({ cert, grader }) {
     for (const pattern of patterns) {
       const match = html.match(pattern);
       if (match && match.length > 0) {
-        // Clean up the URL (remove quotes if captured)
         imageUrl = match[0].replace(/^"|"$/g, '');
         break;
       }
     }
 
-    // Alternative: look for og:image meta tag
+    // Fallback: og:image meta tag
     if (!imageUrl) {
       const ogMatch = html.match(/property="og:image"\s+content="([^"]+)"/i);
       if (ogMatch) imageUrl = ogMatch[1];
     }
 
+    if (!imageUrl) {
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({ imageBase64: null, message: 'Could not find scan URL — upload manually' })
+      };
+    }
+
+    // Download the actual image and convert to base64
+    const imgResponse = await fetch(imageUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Referer': 'https://www.psacard.com/'
+      }
+    });
+
+    if (!imgResponse.ok) {
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({ imageBase64: null, imageUrl, message: 'Found scan URL but download failed — upload manually' })
+      };
+    }
+
+    const imgBuffer = Buffer.from(await imgResponse.arrayBuffer());
+    const contentType = imgResponse.headers.get('content-type') || 'image/jpeg';
+    const imageBase64 = imgBuffer.toString('base64');
+
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
-        imageUrl,
-        message: imageUrl ? 'Scan found' : 'Could not extract scan URL — upload manually'
+        imageBase64,
+        mimeType: contentType,
+        message: 'PSA scan downloaded'
       })
     };
   } catch (err) {
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({ imageUrl: null, message: 'Failed to fetch PSA page' })
+      body: JSON.stringify({ imageBase64: null, message: 'Failed to fetch PSA page: ' + err.message })
     };
   }
 }
