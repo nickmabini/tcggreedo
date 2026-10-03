@@ -1024,9 +1024,7 @@
     }
   }
 
-  // Fetch PSA scan in background after parsing — replaces uploaded photo with official scan
-  // Fetch card art and composite PSA label overlay
-  // Fetch card art directly from PokemonTCG API (browser-side, CORS supported)
+  // Fetch card art from PokemonTCG API (browser-side, matching Cardex pattern)
   async function fetchAndPreviewPsaScan(cert) {
     toast('Fetching card image...');
     try {
@@ -1040,20 +1038,98 @@
         cert: cert
       };
 
-      // Fetch card image via serverless function (avoids CORS)
-      const data = await api('fetch-psa-scan', cardInfo);
+      // Extract core Pokemon name (strip suffixes like "— Holo", "LV.X", "ex")
+      const coreName = cardInfo.name
+        .replace(/\s*—.*/,'')
+        .replace(/\s*LV\.?\s*X$/i,'')
+        .replace(/\s+ex$/i,'')
+        .replace(/\s+EX$/,'')
+        .replace(/\s+GX$/i,'')
+        .replace(/\s+V$/i,'')
+        .replace(/\s+VMAX$/i,'')
+        .replace(/\s+VSTAR$/i,'')
+        .trim();
 
-      if (data.imageBase64) {
-        const imgDataUrl = 'data:' + (data.mimeType || 'image/png') + ';base64,' + data.imageBase64;
+      // Build query matching Cardex pattern (wildcards + select for speed)
+      let query = `name:"${coreName}*"`;
+      if (cardInfo.set) {
+        const safeSet = cardInfo.set.replace(/"/g, '');
+        query += ` set.name:"${safeSet}*"`;
+      }
+      const encoded = encodeURIComponent(query);
+      const url = `https://api.pokemontcg.io/v2/cards?q=${encoded}&pageSize=10&select=id,name,images`;
+
+      let res = await fetch(url);
+      let data = res.ok ? await res.json() : null;
+
+      // Fallback: name only (set name mismatch)
+      if (!data || !data.data || data.data.length === 0) {
+        const nameOnly = encodeURIComponent(`name:"${coreName}*"`);
+        res = await fetch(`https://api.pokemontcg.io/v2/cards?q=${nameOnly}&pageSize=5&select=id,name,images`);
+        data = res.ok ? await res.json() : null;
+      }
+
+      if (!data || !data.data || data.data.length === 0) {
+        toast('Card not found — using your photo');
+        return;
+      }
+
+      // Best match: prefer name containing our core name
+      let best = data.data.find(c => c.name.toLowerCase().includes(coreName.toLowerCase())) || data.data[0];
+
+      // If multiple results, try matching by card number
+      if (cardInfo.cardNumber && data.data.length > 1) {
+        const num = cardInfo.cardNumber.split('/')[0];
+        const numMatch = data.data.find(c => c.id && c.id.endsWith('-' + num));
+        if (numMatch) best = numMatch;
+      }
+
+      const imageUrl = best.images?.large || best.images?.small;
+      if (!imageUrl) {
+        toast('No image available — using your photo');
+        return;
+      }
+
+      // Load image via img tag then convert to data URL using canvas
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = async () => {
+        // Draw to canvas to get data URL (avoids CORS blob issues)
+        const c = document.createElement('canvas');
+        c.width = img.naturalWidth;
+        c.height = img.naturalHeight;
+        const ctx = c.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+
+        let imgDataUrl;
+        try {
+          imgDataUrl = c.toDataURL('image/png');
+        } catch(e) {
+          // CORS tainted — try fetching as blob through our API
+          try {
+            const dlData = await api('fetch-psa-scan', { imageUrl: imageUrl });
+            if (dlData.imageBase64) {
+              imgDataUrl = 'data:image/png;base64,' + dlData.imageBase64;
+            } else {
+              toast('Image CORS blocked — using your photo');
+              return;
+            }
+          } catch(e2) {
+            toast('Image download failed — using your photo');
+            return;
+          }
+        }
 
         // Composite with PSA label
         const composited = await compositeSlabImage(imgDataUrl, cardInfo);
         $('#previewImg').src = composited;
         uploadedImageData = composited;
         toast('Card image loaded with ' + cardInfo.grader + ' label');
-      } else {
-        toast(data.message || 'Card image not available — using your photo');
-      }
+      };
+      img.onerror = () => {
+        toast('Card image failed to load — using your photo');
+      };
+      img.src = imageUrl;
 
     } catch (e) {
       toast('Card image fetch failed — using your photo');
