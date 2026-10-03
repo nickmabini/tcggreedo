@@ -1012,9 +1012,9 @@
 
       toast('Label parsed successfully');
 
-      // Try to fetch PSA scan automatically
-      if (parsed.cert && (parsed.grader || 'PSA').toUpperCase() === 'PSA') {
-        fetchAndPreviewPsaScan(parsed.cert);
+      // Fetch card art and composite slab image
+      if (parsed.name) {
+        fetchAndPreviewPsaScan(parsed.cert || '');
       }
     } catch (e) {
       $('#parsing').classList.remove('show');
@@ -1025,30 +1025,159 @@
   }
 
   // Fetch PSA scan in background after parsing — replaces uploaded photo with official scan
+  // Fetch card art and composite PSA label overlay
   async function fetchAndPreviewPsaScan(cert) {
-    toast('Fetching PSA scan...');
+    toast('Fetching card image...');
     try {
-      const data = await api('fetch-psa-scan', { cert, grader: 'PSA' });
+      const cardInfo = {
+        name: $('#fName').value,
+        set: $('#fSet').value,
+        cardNumber: $('#fCardNum').value,
+        grader: $('#fGrader').value,
+        grade: $('#fGrade').value,
+        cert: cert
+      };
+
+      const data = await api('fetch-psa-scan', cardInfo);
       if (data.imageBase64) {
-        // Build data URL from the downloaded scan
-        const mimeType = data.mimeType || 'image/jpeg';
-        const scanDataUrl = 'data:' + mimeType + ';base64,' + data.imageBase64;
+        const mimeType = data.mimeType || 'image/png';
+        const cardDataUrl = 'data:' + mimeType + ';base64,' + data.imageBase64;
 
-        // Swap the preview image to show the PSA scan
-        $('#previewImg').src = scanDataUrl;
+        // Composite PSA label on top of card art
+        const composited = await compositeSlabImage(cardDataUrl, cardInfo);
 
-        // Store PSA scan as the image to be uploaded (replaces the user's photo)
-        uploadedImageData = scanDataUrl;
+        // Swap the preview
+        $('#previewImg').src = composited;
+        uploadedImageData = composited;
 
-        toast('PSA scan loaded — this will be your listing image');
+        toast('Card image loaded with ' + cardInfo.grader + ' label');
       } else {
-        toast(data.message || 'PSA scan not available — using your photo');
+        toast(data.message || 'Card image not available — using your photo');
       }
     } catch (e) {
-      // Silent fail — keeps the user's uploaded photo
-      toast('PSA scan fetch failed — using your photo');
-      console.log('PSA scan fetch failed:', e);
+      toast('Card image fetch failed — using your photo');
+      console.log('Card image fetch failed:', e);
     }
+  }
+
+  // Composite card art + PSA/CGC label using Canvas
+  function compositeSlabImage(cardDataUrl, info) {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        // Canvas dimensions — slab proportions (3:4 with label space)
+        const labelH = 90;
+        const padding = 16;
+        const caseW = img.width + padding * 2;
+        const caseH = img.height + labelH + padding * 3;
+
+        const canvas = document.createElement('canvas');
+        canvas.width = caseW;
+        canvas.height = caseH;
+        const ctx = canvas.getContext('2d');
+
+        // Slab background (dark gray case)
+        ctx.fillStyle = '#2a2a2a';
+        ctx.fillRect(0, 0, caseW, caseH);
+
+        // Inner border
+        ctx.strokeStyle = '#444';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(4, 4, caseW - 8, caseH - 8);
+
+        // ── PSA LABEL ──────────────────────────────
+        const lx = padding;
+        const ly = padding;
+        const lw = caseW - padding * 2;
+
+        // Red label background
+        ctx.fillStyle = '#cc0000';
+        ctx.fillRect(lx, ly, lw, labelH);
+
+        // White inner area
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(lx + 3, ly + 3, lw - 6, labelH - 6);
+
+        // Red top bar with year + set
+        ctx.fillStyle = '#cc0000';
+        ctx.fillRect(lx + 3, ly + 3, lw - 6, 26);
+
+        // Year + Set text (white on red)
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 13px Arial, sans-serif';
+        const yearSet = (info.year ? info.year + ' ' : '') + 'POKEMON';
+        ctx.fillText(yearSet, lx + 10, ly + 20);
+
+        // Card number (right side of red bar)
+        if (info.cardNumber) {
+          ctx.font = 'bold 12px Arial, sans-serif';
+          const cnText = '#' + info.cardNumber;
+          const cnW = ctx.measureText(cnText).width;
+          ctx.fillText(cnText, lx + lw - cnW - 10, ly + 20);
+        }
+
+        // Card name (black on white)
+        ctx.fillStyle = '#000';
+        ctx.font = 'bold 14px Arial, sans-serif';
+        const cardName = (info.name || 'CARD NAME').toUpperCase();
+        ctx.fillText(cardName, lx + 10, ly + 46);
+
+        // Grade text (right side)
+        const gradeLabel = info.grader === 'PSA' ? getGradeText(info.grade) : info.grade;
+        ctx.font = 'bold 13px Arial, sans-serif';
+        ctx.fillStyle = '#000';
+        const gradeText = gradeLabel;
+        const gtW = ctx.measureText(gradeText).width;
+        ctx.fillText(gradeText, lx + lw - gtW - 10, ly + 46);
+
+        // Grade number (large, right)
+        ctx.font = 'bold 28px Arial, sans-serif';
+        ctx.fillStyle = '#000';
+        const gradeNum = String(info.grade);
+        const gnW = ctx.measureText(gradeNum).width;
+        ctx.fillText(gradeNum, lx + lw - gnW - 10, ly + 78);
+
+        // PSA logo area + cert number (bottom left of label)
+        ctx.fillStyle = '#cc0000';
+        ctx.fillRect(lx + 8, ly + 58, 40, 22);
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 14px Arial, sans-serif';
+        ctx.fillText(info.grader || 'PSA', lx + 12, ly + 74);
+
+        // Cert number
+        ctx.fillStyle = '#333';
+        ctx.font = '11px Arial, sans-serif';
+        ctx.fillText(info.cert || '', lx + 56, ly + 76);
+
+        // ── CARD ART ───────────────────────────────
+        ctx.drawImage(img, padding, labelH + padding * 2, img.width, img.height);
+
+        resolve(canvas.toDataURL('image/jpeg', 0.92));
+      };
+      img.onerror = () => resolve(cardDataUrl); // Fallback to raw art
+      img.src = cardDataUrl;
+    });
+  }
+
+  function getGradeText(grade) {
+    const g = parseFloat(grade);
+    if (g === 10) return 'GEM MT';
+    if (g === 9) return 'MINT';
+    if (g === 8.5) return 'NM-MT+';
+    if (g === 8) return 'NM-MT';
+    if (g === 7.5) return 'NR MT+';
+    if (g === 7) return 'NR MT';
+    if (g === 6.5) return 'EX-MT+';
+    if (g === 6) return 'EX-MT';
+    if (g === 5.5) return 'EX+';
+    if (g === 5) return 'EX';
+    if (g === 4) return 'VG-EX';
+    if (g === 3) return 'VG';
+    if (g === 2) return 'GOOD';
+    if (g === 1.5) return 'FR';
+    if (g === 1) return 'PR';
+    return '';
   }
 
   // ── SAVE / UPDATE / ARCHIVE / DELETE ──────────────────────────
