@@ -277,44 +277,42 @@ async function uploadImage({ imageBase64, filename }) {
 // Fetches the official PSA slab scan image from psacard.com
 // ═══════════════════════════════════════════════════════════════
 async function fetchPsaScan({ name, set, cardNumber, grader, grade, cert }) {
-  // Fetch clean card art from PokemonTCG API
   try {
-    // Build search query — try name + set first, fall back to name only
-    let query = '';
-    if (name && set) {
-      query = `name:"${name.replace(/—.*/,'').trim()}" set.name:"${set}"`;
-    } else if (name) {
-      query = `name:"${name.replace(/—.*/,'').trim()}"`;
-    } else {
+    const cleanName = (name || '').replace(/—.*/,'').trim();
+    if (!cleanName) {
       return { statusCode: 200, headers, body: JSON.stringify({ imageBase64: null, message: 'No card name to search' }) };
     }
 
-    const response = await fetch(
-      `https://api.pokemontcg.io/v2/cards?q=${encodeURIComponent(query)}&pageSize=5`,
-      { headers: { 'Content-Type': 'application/json' } }
+    // Search PokemonTCG API by name + set
+    let query = set
+      ? `name:"${cleanName}" set.name:"${set}"`
+      : `name:"${cleanName}"`;
+
+    let response = await fetch(
+      `https://api.pokemontcg.io/v2/cards?q=${encodeURIComponent(query)}&pageSize=5`
     );
 
-    if (!response.ok) {
-      return { statusCode: 200, headers, body: JSON.stringify({ imageBase64: null, message: 'Card API error — status ' + response.status }) };
+    // If first attempt fails or returns empty, try name only
+    let data = null;
+    if (response.ok) {
+      data = await response.json();
     }
 
-    const data = await response.json();
+    if (!data || !data.data || data.data.length === 0) {
+      response = await fetch(
+        `https://api.pokemontcg.io/v2/cards?q=${encodeURIComponent(`name:"${cleanName}"`)}&pageSize=5`
+      );
+      if (!response.ok) {
+        return { statusCode: 200, headers, body: JSON.stringify({ imageBase64: null, message: 'Card API error — status ' + response.status }) };
+      }
+      data = await response.json();
+    }
 
     if (!data.data || data.data.length === 0) {
-      // Retry with just the name (set name mismatch is common)
-      const fallbackQuery = `name:"${name.replace(/—.*/,'').trim()}"`;
-      const fallbackRes = await fetch(
-        `https://api.pokemontcg.io/v2/cards?q=${encodeURIComponent(fallbackQuery)}&pageSize=5`,
-        { headers: { 'Content-Type': 'application/json' } }
-      );
-      const fallbackData = await fallbackRes.json();
-      if (!fallbackData.data || fallbackData.data.length === 0) {
-        return { statusCode: 200, headers, body: JSON.stringify({ imageBase64: null, message: 'Card not found in PokemonTCG database' }) };
-      }
-      data.data = fallbackData.data;
+      return { statusCode: 200, headers, body: JSON.stringify({ imageBase64: null, message: 'Card not found in database' }) };
     }
 
-    // Try to match by card number if multiple results
+    // Match by card number if multiple results
     let card = data.data[0];
     if (cardNumber && data.data.length > 1) {
       const numMatch = data.data.find(c => c.number === cardNumber.split('/')[0]);
@@ -323,7 +321,7 @@ async function fetchPsaScan({ name, set, cardNumber, grader, grade, cert }) {
 
     const imageUrl = card.images?.large || card.images?.small;
     if (!imageUrl) {
-      return { statusCode: 200, headers, body: JSON.stringify({ imageBase64: null, message: 'No image available for this card' }) };
+      return { statusCode: 200, headers, body: JSON.stringify({ imageBase64: null, message: 'No image available' }) };
     }
 
     // Download the card image
@@ -341,8 +339,6 @@ async function fetchPsaScan({ name, set, cardNumber, grader, grade, cert }) {
       body: JSON.stringify({
         imageBase64,
         mimeType: 'image/png',
-        cardName: card.name,
-        setName: card.set?.name,
         message: 'Card image found'
       })
     };
