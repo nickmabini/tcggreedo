@@ -276,73 +276,25 @@ async function uploadImage({ imageBase64, filename }) {
 // ACTION: fetch-psa-scan
 // Fetches the official PSA slab scan image from psacard.com
 // ═══════════════════════════════════════════════════════════════
-async function fetchPsaScan({ name, set, cardNumber, grader, grade, cert }) {
-  try {
-    const cleanName = (name || '').replace(/—.*/,'').trim();
-    if (!cleanName) {
-      return { statusCode: 200, headers, body: JSON.stringify({ imageBase64: null, message: 'No card name to search' }) };
-    }
-
-    // Search PokemonTCG API by name + set
-    let query = set
-      ? `name:"${cleanName}" set.name:"${set}"`
-      : `name:"${cleanName}"`;
-
-    let response = await fetch(
-      `https://api.pokemontcg.io/v2/cards?q=${encodeURIComponent(query)}&pageSize=5`
-    );
-
-    // If first attempt fails or returns empty, try name only
-    let data = null;
-    if (response.ok) {
-      data = await response.json();
-    }
-
-    if (!data || !data.data || data.data.length === 0) {
-      response = await fetch(
-        `https://api.pokemontcg.io/v2/cards?q=${encodeURIComponent(`name:"${cleanName}"`)}&pageSize=5`
-      );
-      if (!response.ok) {
-        return { statusCode: 200, headers, body: JSON.stringify({ imageBase64: null, message: 'Card API error — status ' + response.status }) };
+async function fetchPsaScan({ name, set, cardNumber, grader, grade, cert, imageUrl }) {
+  // If called with a direct imageUrl, just download and return base64
+  if (imageUrl) {
+    try {
+      const imgRes = await fetch(imageUrl);
+      if (!imgRes.ok) {
+        return { statusCode: 200, headers, body: JSON.stringify({ imageBase64: null, message: 'Image download failed' }) };
       }
-      data = await response.json();
+      const imgBuffer = Buffer.from(await imgRes.arrayBuffer());
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({ imageBase64: imgBuffer.toString('base64'), mimeType: 'image/png', message: 'Image downloaded' })
+      };
+    } catch (err) {
+      return { statusCode: 200, headers, body: JSON.stringify({ imageBase64: null, message: 'Download error: ' + err.message }) };
     }
-
-    if (!data.data || data.data.length === 0) {
-      return { statusCode: 200, headers, body: JSON.stringify({ imageBase64: null, message: 'Card not found in database' }) };
-    }
-
-    // Match by card number if multiple results
-    let card = data.data[0];
-    if (cardNumber && data.data.length > 1) {
-      const numMatch = data.data.find(c => c.number === cardNumber.split('/')[0]);
-      if (numMatch) card = numMatch;
-    }
-
-    const imageUrl = card.images?.large || card.images?.small;
-    if (!imageUrl) {
-      return { statusCode: 200, headers, body: JSON.stringify({ imageBase64: null, message: 'No image available' }) };
-    }
-
-    // Download the card image
-    const imgResponse = await fetch(imageUrl);
-    if (!imgResponse.ok) {
-      return { statusCode: 200, headers, body: JSON.stringify({ imageBase64: null, message: 'Image download failed' }) };
-    }
-
-    const imgBuffer = Buffer.from(await imgResponse.arrayBuffer());
-    const imageBase64 = imgBuffer.toString('base64');
-
-    return {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify({
-        imageBase64,
-        mimeType: 'image/png',
-        message: 'Card image found'
-      })
-    };
-  } catch (err) {
-    return { statusCode: 200, headers, body: JSON.stringify({ imageBase64: null, message: 'Error: ' + err.message }) };
   }
+
+  // No direct URL — return empty (browser handles the search)
+  return { statusCode: 200, headers, body: JSON.stringify({ imageBase64: null, message: 'No image URL provided' }) };
 }
