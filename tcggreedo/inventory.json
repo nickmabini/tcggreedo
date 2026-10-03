@@ -620,5 +620,21 @@
     "dateAdded": "2026-10-02",
     "image": "0019258447-front.jpg",
     "soldDate": "2026-10-02"
+  },
+  {
+    "id": "64798233",
+    "name": "Rocket's Zapdos",
+    "set": "Gym Challenge",
+    "year": 2000,
+    "cardNumber": "15/132",
+    "grader": "PSA",
+    "grade": 10,
+    "price": 0,
+    "hiddenPrice": 35000,
+    "quantity": 1,
+    "sold": 0,
+    "archived": false,
+    "dateAdded": "2026-10-03",
+    "image": "64798233-front.jpg"
   }
 ]
