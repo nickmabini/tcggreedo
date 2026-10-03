@@ -136,7 +136,7 @@ If you cannot read a field, use null for that field.`
 // ═══════════════════════════════════════════════════════════════
 async function getInventory() {
   const response = await fetch(
-    `https://api.github.com/repos/${GITHUB_REPO}/contents/inventory.json`,
+    `https://api.github.com/repos/${GITHUB_REPO}/contents/tcggreedo/inventory.json`,
     {
       headers: {
         'Authorization': `Bearer ${GITHUB_TOKEN}`,
