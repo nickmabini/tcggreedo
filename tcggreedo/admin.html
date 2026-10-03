@@ -1040,53 +1040,20 @@
         cert: cert
       };
 
-      // Search PokemonTCG API by name + set
-      const cleanName = cardInfo.name.replace(/—.*/,'').trim();
-      let query = cleanName && cardInfo.set
-        ? `name:"${cleanName}" set.name:"${cardInfo.set}"`
-        : `name:"${cleanName}"`;
+      // Fetch card image via serverless function (avoids CORS)
+      const data = await api('fetch-psa-scan', cardInfo);
 
-      let res = await fetch(`https://api.pokemontcg.io/v2/cards?q=${encodeURIComponent(query)}&pageSize=5`);
-      let data = await res.json();
+      if (data.imageBase64) {
+        const imgDataUrl = 'data:' + (data.mimeType || 'image/png') + ';base64,' + data.imageBase64;
 
-      // Fallback: search by name only if set didn't match
-      if (!data.data || data.data.length === 0) {
-        res = await fetch(`https://api.pokemontcg.io/v2/cards?q=${encodeURIComponent(`name:"${cleanName}"`)}&pageSize=5`);
-        data = await res.json();
+        // Composite with PSA label
+        const composited = await compositeSlabImage(imgDataUrl, cardInfo);
+        $('#previewImg').src = composited;
+        uploadedImageData = composited;
+        toast('Card image loaded with ' + cardInfo.grader + ' label');
+      } else {
+        toast(data.message || 'Card image not available — using your photo');
       }
-
-      if (!data.data || data.data.length === 0) {
-        toast('Card not found — using your photo');
-        return;
-      }
-
-      // Match by card number if multiple results
-      let card = data.data[0];
-      if (cardInfo.cardNumber && data.data.length > 1) {
-        const numMatch = data.data.find(c => c.number === cardInfo.cardNumber.split('/')[0]);
-        if (numMatch) card = numMatch;
-      }
-
-      const imageUrl = card.images?.large || card.images?.small;
-      if (!imageUrl) {
-        toast('No image available — using your photo');
-        return;
-      }
-
-      // Fetch image as blob to avoid CORS canvas tainting
-      const imgRes = await fetch(imageUrl);
-      const imgBlob = await imgRes.blob();
-      const imgDataUrl = await new Promise(resolve => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.readAsDataURL(imgBlob);
-      });
-
-      // Composite with PSA label
-      const composited = await compositeSlabImage(imgDataUrl, cardInfo);
-      $('#previewImg').src = composited;
-      uploadedImageData = composited;
-      toast('Card image loaded with ' + cardInfo.grader + ' label');
 
     } catch (e) {
       toast('Card image fetch failed — using your photo');
