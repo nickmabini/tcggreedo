@@ -91,7 +91,7 @@ async function parseSlab({ imageBase64, mimeType }) {
           },
           {
             type: 'text',
-            text: `Read the grading label on this PSA or CGC slab. Return ONLY a JSON object with these fields, nothing else, no markdown backticks:
+            text: `Read the grading label on this PSA or CGC slab. Also identify the bounding box of the entire slab case in the photo. Return ONLY a JSON object with these fields, nothing else, no markdown backticks:
 {
   "name": "card name (e.g. Charizard, Rocket's Snorlax ex)",
   "set": "set name (e.g. Base Set, Team Rocket Returns)",
@@ -99,8 +99,10 @@ async function parseSlab({ imageBase64, mimeType }) {
   "cardNumber": "card number in set (e.g. 104/109, DP45)",
   "grader": "PSA or CGC or BGS",
   "grade": 9,
-  "cert": "cert number from the label"
+  "cert": "cert number from the label",
+  "crop": { "top": 5, "left": 15, "width": 70, "height": 90 }
 }
+"crop" values are percentages of the full image. "top" is how far down from the top the slab starts, "left" is how far from the left edge, "width" and "height" are the slab dimensions as percentage of the full image. If you cannot determine the crop, use null for crop.
 If you cannot read a field, use null for that field.`
           }
         ]
