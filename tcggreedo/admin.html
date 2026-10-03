@@ -1024,17 +1024,29 @@
     }
   }
 
-  // Fetch PSA scan in background after parsing
+  // Fetch PSA scan in background after parsing — replaces uploaded photo with official scan
   async function fetchAndPreviewPsaScan(cert) {
+    toast('Fetching PSA scan...');
     try {
       const data = await api('fetch-psa-scan', { cert, grader: 'PSA' });
-      if (data.imageUrl) {
-        // Store the PSA scan URL for later upload
-        window._psaScanUrl = data.imageUrl;
-        toast('PSA scan found — will use as listing image');
+      if (data.imageBase64) {
+        // Build data URL from the downloaded scan
+        const mimeType = data.mimeType || 'image/jpeg';
+        const scanDataUrl = 'data:' + mimeType + ';base64,' + data.imageBase64;
+
+        // Swap the preview image to show the PSA scan
+        $('#previewImg').src = scanDataUrl;
+
+        // Store PSA scan as the image to be uploaded (replaces the user's photo)
+        uploadedImageData = scanDataUrl;
+
+        toast('PSA scan loaded — this will be your listing image');
+      } else {
+        toast(data.message || 'PSA scan not available — using your photo');
       }
     } catch (e) {
-      // Silent fail — user can still upload their own photo
+      // Silent fail — keeps the user's uploaded photo
+      toast('PSA scan fetch failed — using your photo');
       console.log('PSA scan fetch failed:', e);
     }
   }
@@ -1055,7 +1067,7 @@
       sold: 0,
       archived: false,
       dateAdded: new Date().toISOString().split('T')[0],
-      image: slab => slab.id + '-front.jpg'
+      image: ''
     };
     slab.image = slab.id + '-front.jpg';
 
@@ -1067,16 +1079,9 @@
     toast('Publishing...');
 
     try {
-      // Upload image if we have one
+      // Upload image — either PSA scan (if fetched) or user's photo
       if (uploadedImageData) {
-        let imageBase64;
-        if (window._psaScanUrl) {
-          // We have a PSA scan URL — fetch it and convert to base64
-          // Actually, we can't fetch cross-origin from browser. Use the uploaded photo instead.
-          imageBase64 = uploadedImageData.split(',')[1];
-        } else {
-          imageBase64 = uploadedImageData.split(',')[1];
-        }
+        const imageBase64 = uploadedImageData.split(',')[1];
         await api('upload-image', { imageBase64, filename: slab.image });
       }
 
