@@ -1012,6 +1012,9 @@
 
       toast('Label parsed successfully');
 
+      // Store crop data for fallback
+      window._slabCrop = parsed.crop || null;
+
       // Fetch card art and composite slab image
       if (parsed.name) {
         fetchAndPreviewPsaScan(parsed.cert || '');
@@ -1070,7 +1073,7 @@
       }
 
       if (!data || !data.data || data.data.length === 0) {
-        toast('Card not found — using your photo');
+        cropAndUsePhoto();
         return;
       }
 
@@ -1086,7 +1089,7 @@
 
       const imageUrl = best.images?.large || best.images?.small;
       if (!imageUrl) {
-        toast('No image available — using your photo');
+        cropAndUsePhoto();
         return;
       }
 
@@ -1127,16 +1130,72 @@
         toast('Card image loaded with ' + cardInfo.grader + ' label');
       };
       img.onerror = () => {
-        toast('Card image failed to load — using your photo');
+        cropAndUsePhoto();
+        return;
       };
       img.src = imageUrl;
 
     } catch (e) {
-      toast('Card image fetch failed — using your photo');
+      cropAndUsePhoto();
       console.log('Card image fetch error:', e);
     }
   }
 
+  // Crop uploaded photo to just the slab using Claude's coordinates
+  function cropAndUsePhoto() {
+    if (!uploadedImageData || !window._slabCrop) {
+      toast('Using your full photo');
+      return;
+    }
+
+    const crop = window._slabCrop;
+    const img = new Image();
+    img.onload = () => {
+      const sx = (crop.left / 100) * img.width;
+      const sy = (crop.top / 100) * img.height;
+      const sw = (crop.width / 100) * img.width;
+      const sh = (crop.height / 100) * img.height;
+
+      // Add some padding (2%)
+      const pad = 0.02;
+      const fx = Math.max(0, sx - img.width * pad);
+      const fy = Math.max(0, sy - img.height * pad);
+      const fw = Math.min(img.width - fx, sw + img.width * pad * 2);
+      const fh = Math.min(img.height - fy, sh + img.height * pad * 2);
+
+      const canvas = document.createElement('canvas');
+      // Max 800px wide for file size
+      const maxW = 800;
+      const scale = fw > maxW ? maxW / fw : 1;
+      canvas.width = Math.round(fw * scale);
+      canvas.height = Math.round(fh * scale);
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, fx, fy, fw, fh, 0, 0, canvas.width, canvas.height);
+
+      const cropped = canvas.toDataURL('image/jpeg', 0.85);
+      $('#previewImg').src = cropped;
+      uploadedImageData = cropped;
+      toast('Photo cropped to slab');
+    };
+    img.onerror = () => toast('Using your full photo');
+    img.src = uploadedImageData;
+  }    
+  // Compress any image data URL to JPEG at maxWidth, return pure base64 (no prefix)
+  function compressImage(dataUrl, maxWidth, quality) {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        const scale = img.width > maxWidth ? maxWidth / img.width : 1;
+        const c = document.createElement('canvas');
+        c.width = Math.round(img.width * scale);
+        c.height = Math.round(img.height * scale);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        resolve(c.toDataURL('image/jpeg', quality).split(',')[1]);
+      };
+      img.onerror = () => resolve(dataUrl.split(',')[1]);
+      img.src = dataUrl;
+    });
+  }    
   // Composite card art + PSA/CGC label using Canvas
   function compositeSlabImage(cardDataUrl, info) {
     return new Promise((resolve) => {
@@ -1294,21 +1353,11 @@
     toast('Publishing...');
 
     try {
-      // Upload image — either card art composite or user's photo
+      // Upload image — compress to stay under Netlify's 6MB payload limit
       if (uploadedImageData) {
-        let imageBase64 = uploadedImageData.split(',')[1];
-        // Check size — if over 4MB base64 (~3MB file), compress further
-        if (imageBase64.length > 4000000) {
-          const img = new Image();
-          img.src = uploadedImageData;
-          await new Promise(r => img.onload = r);
-          const c = document.createElement('canvas');
-          c.width = Math.min(img.width, 600);
-          c.height = Math.round(img.height * (c.width / img.width));
-          c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-          imageBase64 = c.toDataURL('image/jpeg', 0.7).split(',')[1];
-        }
-        await api('upload-image', { imageBase64, filename: slab.image });
+        // Always compress to JPEG, max 800px wide
+        const compressedBase64 = await compressImage(uploadedImageData, 800, 0.82);
+        await api('upload-image', { imageBase64: compressedBase64, filename: slab.image });
       }
 
       // Add slab to inventory and save
